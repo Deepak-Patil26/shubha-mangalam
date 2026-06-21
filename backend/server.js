@@ -24,6 +24,9 @@ const { errorHandler } = require("./src/middleware/error.middleware");
 
 const app = express();
 
+// Fix for Render proxy warning
+app.set("trust proxy", 1);
+
 // Security middleware
 app.use(helmet());
 app.use(
