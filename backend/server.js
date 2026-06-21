@@ -28,14 +28,25 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? ["https://shubhamangalam.com"]
-        : [
-            "http://localhost:5173",
-            "http://localhost:3000",
-            "http://127.0.0.1:5173",
-          ],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      const allowedOrigins = [
+        "https://shubha-mangalam-frontend.vercel.app",
+        "https://shubha-mangalam.vercel.app",
+        "https://shubhamangalam.com",
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+      ];
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -68,7 +79,7 @@ app.use("/api/broker", brokerRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/translate", translationRoutes);
 app.use("/api/upload", uploadRoutes);
-app.use("/api/public", publicRoutes); // Public routes - NO authentication required
+app.use("/api/public", publicRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
