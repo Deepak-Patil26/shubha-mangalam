@@ -71,7 +71,7 @@ import {
   FaQuoteRight,
 } from "react-icons/fa";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 // ==================== AUTH HELPER ====================
 const getToken = () => localStorage.getItem("token");

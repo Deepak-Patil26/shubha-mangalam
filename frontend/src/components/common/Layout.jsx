@@ -27,7 +27,7 @@ import {
 } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
