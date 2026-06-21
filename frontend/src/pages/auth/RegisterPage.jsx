@@ -18,6 +18,8 @@ import Layout from "../../components/common/Layout";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 const RegisterPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -106,7 +108,7 @@ const RegisterPage = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        `${API_URL}/auth/register`,
         payload,
       );
 

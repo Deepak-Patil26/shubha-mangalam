@@ -13,6 +13,8 @@ import Layout from "../../components/common/Layout";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -44,10 +46,7 @@ const LoginPage = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        formData,
-      );
+      const response = await axios.post(`${API_URL}/auth/login`, formData);
 
       localStorage.setItem("token", response.data.token);
 

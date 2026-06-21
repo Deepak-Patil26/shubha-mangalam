@@ -15,7 +15,7 @@ import Layout from "../components/common/Layout";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const PlaceholderImage = ({ text, className }) => (
   <div
