@@ -6841,22 +6841,242 @@ const UsersManagementPage = () => {
   );
 };
 
-// Callbacks Page
-const CallbacksPage = () => (
-  <Layout>
-    <div className="min-h-screen py-12 px-4">
-      <div className="container mx-auto max-w-6xl">
-        <h1 className="text-3xl font-bold text-text-dark mb-8">
-          Callback Requests
-        </h1>
-        <div className="bg-white rounded-2xl shadow-premium p-8 text-center">
-          <FaPhone className="text-6xl text-gray-300 mx-auto mb-4" />
-          <p className="text-text-light">No callback requests yet.</p>
+// ==================== CALLBACKS PAGE ====================
+const CallbacksPage = () => {
+  const [callbacks, setCallbacks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState("all");
+
+  useEffect(() => {
+    loadCallbacks();
+  }, [filterStatus]);
+
+  const loadCallbacks = async () => {
+    setIsLoading(true);
+    try {
+      const params = filterStatus !== "all" ? { status: filterStatus } : {};
+      const response = await axios.get(`${API_URL}/admin/callbacks`, {
+        params,
+        ...getHeaders(),
+      });
+      setCallbacks(response.data.callbacks || []);
+    } catch (error) {
+      console.error("Error loading callbacks:", error);
+      toast.error("Failed to load callbacks");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStatusUpdate = async (id, status) => {
+    try {
+      await axios.put(
+        `${API_URL}/admin/callbacks/${id}`,
+        { status },
+        getHeaders(),
+      );
+      toast.success(`Callback ${status}`);
+      loadCallbacks();
+    } catch (error) {
+      toast.error("Failed to update callback");
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    const colors = {
+      pending: "bg-yellow-100 text-yellow-800",
+      contacted: "bg-blue-100 text-blue-800",
+      resolved: "bg-green-100 text-green-800",
+      cancelled: "bg-red-100 text-red-800",
+    };
+    return colors[status] || "bg-gray-100 text-gray-800";
+  };
+
+  return (
+    <Layout>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-text-dark">
+                Callback Requests
+              </h1>
+              <p className="text-text-light">
+                Manage user callback requests from the broker
+              </p>
+            </div>
+            <button
+              onClick={loadCallbacks}
+              className="btn-gold flex items-center space-x-2"
+            >
+              <FaSync className="text-sm" />
+              <span>Refresh</span>
+            </button>
+          </div>
+
+          {/* Filter */}
+          <div className="bg-white rounded-2xl shadow-premium p-4 mb-6">
+            <div className="flex flex-col md:flex-row gap-4">
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-maroon outline-none transition-colors"
+              >
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="contacted">Contacted</option>
+                <option value="resolved">Resolved</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <span className="text-text-light text-sm flex items-center">
+                Total: {callbacks.length} callbacks
+              </span>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <FaSpinner className="text-4xl text-primary-maroon animate-spin" />
+            </div>
+          ) : callbacks.length === 0 ? (
+            <div className="bg-white rounded-2xl shadow-premium p-12 text-center">
+              <FaPhone className="text-6xl text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-text-dark">
+                No Callback Requests
+              </h3>
+              <p className="text-text-light">
+                No callback requests found. They will appear here when users
+                request callbacks.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {callbacks.map((callback) => {
+                const user = callback.userId || {};
+                const profile = callback.profileId || {};
+                const profileName = profile.personalDetails?.fullName || "N/A";
+
+                return (
+                  <div
+                    key={callback._id}
+                    className="bg-white rounded-2xl shadow-premium p-6 hover:shadow-lg transition-shadow"
+                  >
+                    <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-maroon to-primary-gold flex items-center justify-center text-white font-bold text-sm">
+                            {callback.name?.charAt(0) || "U"}
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-text-dark">
+                              {callback.name}
+                            </h3>
+                            <p className="text-text-light text-sm">
+                              {callback.phoneNumber}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
+                          <div className="flex items-center gap-2 text-sm text-text-light">
+                            <FaUser className="text-primary-maroon" />
+                            <span>User: {user.fullName || "N/A"}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-text-light">
+                            <FaUser className="text-primary-gold" />
+                            <span>Profile: {profileName}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-text-light">
+                            <FaCalendar className="text-primary-maroon" />
+                            <span>
+                              {new Date(callback.createdAt).toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+
+                        {callback.message && (
+                          <p className="mt-2 text-text-dark text-sm italic border-l-2 border-primary-gold pl-3">
+                            "{callback.message}"
+                          </p>
+                        )}
+
+                        {callback.notes && (
+                          <p className="mt-1 text-text-light text-sm">
+                            Notes: {callback.notes}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col items-end gap-2 min-w-[120px]">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(callback.status)}`}
+                        >
+                          {callback.status}
+                        </span>
+
+                        <div className="flex gap-2 mt-2">
+                          {callback.status === "pending" && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  handleStatusUpdate(callback._id, "contacted")
+                                }
+                                className="bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs hover:bg-blue-600 transition-colors"
+                              >
+                                Contacted
+                              </button>
+                              <button
+                                onClick={() =>
+                                  handleStatusUpdate(callback._id, "cancelled")
+                                }
+                                className="bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs hover:bg-red-600 transition-colors"
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          )}
+                          {callback.status === "contacted" && (
+                            <button
+                              onClick={() =>
+                                handleStatusUpdate(callback._id, "resolved")
+                              }
+                              className="bg-green-500 text-white px-3 py-1.5 rounded-lg text-xs hover:bg-green-600 transition-colors"
+                            >
+                              Resolve
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="flex gap-2 mt-2">
+                          <a
+                            href={`tel:${callback.phoneNumber}`}
+                            className="p-2 bg-primary-maroon text-white rounded-lg hover:bg-[#600018] transition-colors"
+                            title="Call User"
+                          >
+                            <FaPhone className="text-xs" />
+                          </a>
+                          <a
+                            href={`https://wa.me/${callback.phoneNumber}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                            title="WhatsApp User"
+                          >
+                            <FaWhatsapp className="text-xs" />
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
-    </div>
-  </Layout>
-);
+    </Layout>
+  );
+};
 
 // Complaints Page
 const ComplaintsPage = () => (
