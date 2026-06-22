@@ -5357,6 +5357,970 @@ const AddProfilePage = () => {
   );
 };
 
+// ==================== ADMIN - PROFILES LIST PAGE ====================
+const AdminProfilesListPage = () => {
+  const [profiles, setProfiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+
+  useEffect(() => {
+    loadProfiles();
+  }, []);
+
+  const loadProfiles = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `${API_URL}/admin/profiles/list`,
+        getHeaders(),
+      );
+      setProfiles(response.data.profiles || []);
+    } catch (error) {
+      console.error("Error loading profiles:", error);
+      toast.error("Failed to load profiles");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteProfile = async (profileId) => {
+    if (!window.confirm("Delete this profile permanently?")) return;
+    try {
+      await axios.delete(
+        `${API_URL}/admin/profiles/${profileId}`,
+        getHeaders(),
+      );
+      toast.success("Profile deleted");
+      loadProfiles();
+    } catch (error) {
+      toast.error("Failed to delete profile");
+    }
+  };
+
+  const filteredProfiles = profiles.filter((profile) => {
+    const name = profile.personalDetails?.fullName || "";
+    const mobile = profile.userId?.mobileNumber || "";
+    const matchesSearch =
+      name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      mobile.includes(searchTerm);
+    const matchesType =
+      filterType === "all" ||
+      (filterType === "broker_added" &&
+        profile.profileType === "broker_added") ||
+      (filterType === "self_registered" &&
+        profile.profileType === "self_registered");
+    return matchesSearch && matchesType;
+  });
+
+  return (
+    <Layout>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-text-dark">
+                Profiles Management
+              </h1>
+              <p className="text-text-light">
+                View and manage all user profiles
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <Link
+                to="/admin/add-profile"
+                className="btn-gold flex items-center space-x-2"
+              >
+                <FaUserPlus />
+                <span>Add New Profile</span>
+              </Link>
+              <button
+                onClick={loadProfiles}
+                className="btn-maroon flex items-center space-x-2"
+              >
+                <FaSync className="text-sm" />
+                <span>Refresh</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-premium p-4 mb-6">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by name or mobile..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary-maroon outline-none transition-colors"
+                />
+              </div>
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-maroon outline-none transition-colors"
+              >
+                <option value="all">All Profiles</option>
+                <option value="broker_added">Broker Added</option>
+                <option value="self_registered">Self Registered</option>
+              </select>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <FaSpinner className="text-4xl text-primary-maroon animate-spin" />
+            </div>
+          ) : filteredProfiles.length === 0 ? (
+            <div className="bg-white rounded-2xl shadow-premium p-12 text-center">
+              <FaUser className="text-6xl text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-text-dark">
+                No Profiles Found
+              </h3>
+              <p className="text-text-light">
+                No profiles match your search criteria.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProfiles.map((profile) => {
+                const pd = profile.personalDetails || {};
+                const user = profile.userId || {};
+                const name = pd.fullName || user.fullName || "Unknown";
+                const age = pd.age || "?";
+                const gender = pd.gender || "";
+                const location = pd.location || {};
+                const city = location.city || "";
+                const state = location.state || "";
+                const profileImage = profile.profileImage || null;
+                const isComplete = profile.isProfileComplete || false;
+                const isPublic = profile.isPublic || false;
+                const type = profile.profileType || "self_registered";
+
+                return (
+                  <div
+                    key={profile._id}
+                    className="bg-white rounded-2xl shadow-premium overflow-hidden hover:shadow-xl transition-all"
+                  >
+                    <div className="relative h-48">
+                      {profileImage ? (
+                        <img
+                          src={profileImage}
+                          alt={name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-primary-maroon to-primary-gold flex items-center justify-center text-white text-6xl font-bold">
+                          {name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div className="absolute top-2 right-2 flex gap-1">
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-medium ${
+                            isPublic
+                              ? "bg-green-500 text-white"
+                              : "bg-gray-500 text-white"
+                          }`}
+                        >
+                          {isPublic ? "Public" : "Private"}
+                        </span>
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-medium ${
+                            isComplete
+                              ? "bg-green-500 text-white"
+                              : "bg-yellow-500 text-white"
+                          }`}
+                        >
+                          {isComplete ? "Complete" : "Incomplete"}
+                        </span>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                        <h3 className="text-white text-xl font-bold">{name}</h3>
+                        <div className="flex flex-wrap gap-2 text-white/80 text-sm">
+                          <span>
+                            {age} yrs • {gender}
+                          </span>
+                          <span>
+                            {city}
+                            {city && state ? ", " : ""}
+                            {state}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center justify-between text-sm text-text-light mb-2">
+                        <span className="flex items-center gap-1">
+                          <FaPhone className="text-xs" />
+                          {user.mobileNumber || "N/A"}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-gray-100 text-xs">
+                          {type === "broker_added"
+                            ? "Broker Added"
+                            : "Self Registered"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-text-light">
+                            Completion:
+                          </span>
+                          <span className="text-sm font-semibold text-primary-maroon">
+                            {profile.profileCompletionPercentage || 0}%
+                          </span>
+                        </div>
+                        <div className="flex gap-2">
+                          <Link
+                            to={`/admin/edit-profile/${profile._id}`}
+                            className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Edit Profile"
+                          >
+                            <FaEdit />
+                          </Link>
+                          <Link
+                            to={`/profile/${profile._id}`}
+                            className="p-2 text-green-500 hover:bg-green-50 rounded-lg transition-colors"
+                            title="View Profile"
+                          >
+                            <FaEye />
+                          </Link>
+                          <button
+                            onClick={() => handleDeleteProfile(profile._id)}
+                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete Profile"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    </Layout>
+  );
+};
+
+// ==================== ADMIN - EDIT PROFILE PAGE ====================
+const AdminEditProfilePage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    mobileNumber: "",
+    personalDetails: {
+      age: "",
+      dateOfBirth: "",
+      gender: "",
+      religion: "",
+      caste: "",
+      motherTongue: "",
+      education: "",
+      occupation: "",
+      annualIncome: "",
+      maritalStatus: "",
+      height: "",
+      weight: "",
+      location: { state: "", city: "" },
+      aboutMe: "",
+    },
+    familyDetails: {
+      fatherName: "",
+      motherName: "",
+      brothers: 0,
+      sisters: 0,
+      familyBackground: "",
+    },
+    partnerPreferences: {
+      ageRange: { min: "", max: "" },
+      religion: "",
+      caste: "",
+      education: "",
+      occupation: "",
+    },
+    propertyDetails: {
+      hasAgriculturalLand: false,
+      agriculturalLandAcres: "",
+      hasResidentialProperty: false,
+      residentialPropertyDetails: "",
+      hasCommercialProperty: false,
+      commercialPropertyDetails: "",
+      otherAssets: "",
+      propertyDescription: "",
+    },
+  });
+
+  useEffect(() => {
+    loadProfile();
+  }, [id]);
+
+  const loadProfile = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `${API_URL}/admin/profiles/${id}`,
+        getHeaders(),
+      );
+      const data = response.data;
+      setProfile(data.profile);
+
+      const pd = data.profile.personalDetails || {};
+      const fd = data.profile.familyDetails || {};
+      const pp = data.profile.partnerPreferences || {};
+      const prop = data.profile.propertyDetails || {};
+      const user = data.user || {};
+
+      setFormData({
+        fullName: pd.fullName || user.fullName || "",
+        mobileNumber: user.mobileNumber || "",
+        personalDetails: {
+          age: pd.age || "",
+          dateOfBirth: pd.dateOfBirth
+            ? new Date(pd.dateOfBirth).toISOString().split("T")[0]
+            : "",
+          gender: pd.gender || "",
+          religion: pd.religion || "",
+          caste: pd.caste || "",
+          motherTongue: pd.motherTongue || "",
+          education: pd.education || "",
+          occupation: pd.occupation || "",
+          annualIncome: pd.annualIncome || "",
+          maritalStatus: pd.maritalStatus || "",
+          height: pd.height || "",
+          weight: pd.weight || "",
+          location: {
+            state: pd.location?.state || "",
+            city: pd.location?.city || "",
+          },
+          aboutMe: pd.aboutMe || "",
+        },
+        familyDetails: {
+          fatherName: fd.fatherName || "",
+          motherName: fd.motherName || "",
+          brothers: fd.brothers || 0,
+          sisters: fd.sisters || 0,
+          familyBackground: fd.familyBackground || "",
+        },
+        partnerPreferences: {
+          ageRange: {
+            min: pp.ageRange?.min || "",
+            max: pp.ageRange?.max || "",
+          },
+          religion: pp.religion || "",
+          caste: pp.caste || "",
+          education: pp.education || "",
+          occupation: pp.occupation || "",
+        },
+        propertyDetails: {
+          hasAgriculturalLand: prop.hasAgriculturalLand || false,
+          agriculturalLandAcres: prop.agriculturalLandAcres || "",
+          hasResidentialProperty: prop.hasResidentialProperty || false,
+          residentialPropertyDetails: prop.residentialPropertyDetails || "",
+          hasCommercialProperty: prop.hasCommercialProperty || false,
+          commercialPropertyDetails: prop.commercialPropertyDetails || "",
+          otherAssets: prop.otherAssets || "",
+          propertyDescription: prop.propertyDescription || "",
+        },
+      });
+    } catch (error) {
+      console.error("Error loading profile:", error);
+      toast.error("Failed to load profile");
+      navigate("/admin/profiles");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    const keys = name.split(".");
+    setFormData((prev) => {
+      let newData = { ...prev };
+      let current = newData;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) current[keys[i]] = {};
+        current = current[keys[i]];
+      }
+      current[keys[keys.length - 1]] = type === "checkbox" ? checked : value;
+      return newData;
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
+    try {
+      const updateData = {
+        fullName: formData.fullName,
+        mobileNumber: formData.mobileNumber,
+        personalDetails: {
+          ...formData.personalDetails,
+          age: parseInt(formData.personalDetails.age) || 0,
+          annualIncome: parseInt(formData.personalDetails.annualIncome) || 0,
+          height: parseInt(formData.personalDetails.height) || 0,
+          weight: parseInt(formData.personalDetails.weight) || 0,
+          location: {
+            state: formData.personalDetails.location.state || "",
+            city: formData.personalDetails.location.city || "",
+          },
+        },
+        familyDetails: {
+          ...formData.familyDetails,
+          brothers: parseInt(formData.familyDetails.brothers) || 0,
+          sisters: parseInt(formData.familyDetails.sisters) || 0,
+        },
+        partnerPreferences: {
+          ageRange: {
+            min: parseInt(formData.partnerPreferences.ageRange.min) || 18,
+            max: parseInt(formData.partnerPreferences.ageRange.max) || 40,
+          },
+          religion: formData.partnerPreferences.religion || "",
+          caste: formData.partnerPreferences.caste || "",
+          education: formData.partnerPreferences.education || "",
+          occupation: formData.partnerPreferences.occupation || "",
+        },
+        propertyDetails: {
+          hasAgriculturalLand:
+            formData.propertyDetails.hasAgriculturalLand || false,
+          agriculturalLandAcres:
+            parseInt(formData.propertyDetails.agriculturalLandAcres) || 0,
+          hasResidentialProperty:
+            formData.propertyDetails.hasResidentialProperty || false,
+          residentialPropertyDetails:
+            formData.propertyDetails.residentialPropertyDetails || "",
+          hasCommercialProperty:
+            formData.propertyDetails.hasCommercialProperty || false,
+          commercialPropertyDetails:
+            formData.propertyDetails.commercialPropertyDetails || "",
+          otherAssets: formData.propertyDetails.otherAssets || "",
+          propertyDescription:
+            formData.propertyDetails.propertyDescription || "",
+        },
+      };
+
+      await axios.put(
+        `${API_URL}/admin/profiles/${id}`,
+        updateData,
+        getHeaders(),
+      );
+      toast.success("Profile updated successfully!");
+      navigate("/admin/profiles");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error(error.response?.data?.message || "Failed to update profile");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <FaSpinner className="text-4xl text-primary-maroon animate-spin" />
+        </div>
+      </Layout>
+    );
+  }
+
+  return (
+    <Layout>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="flex items-center gap-4 mb-8">
+            <button
+              onClick={() => navigate("/admin/profiles")}
+              className="text-text-dark hover:text-primary-maroon transition-colors"
+            >
+              <FaArrowLeft className="text-xl" />
+            </button>
+            <div>
+              <h1 className="text-3xl font-bold text-text-dark">
+                Edit Profile
+              </h1>
+              <p className="text-text-light">
+                Update profile details for {formData.fullName || "user"}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-premium p-8">
+            <form onSubmit={handleSubmit}>
+              <h3 className="text-lg font-semibold text-text-dark mb-4 border-b pb-2">
+                Basic Information
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="form-label">Full Name</label>
+                  <input
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter full name"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Mobile Number</label>
+                  <input
+                    name="mobileNumber"
+                    type="tel"
+                    value={formData.mobileNumber}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter mobile number"
+                  />
+                </div>
+              </div>
+
+              <h3 className="text-lg font-semibold text-text-dark mt-6 mb-4 border-b pb-2">
+                Personal Details
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="form-label">Age</label>
+                  <input
+                    name="personalDetails.age"
+                    type="number"
+                    value={formData.personalDetails.age}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter age"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Date of Birth</label>
+                  <input
+                    name="personalDetails.dateOfBirth"
+                    type="date"
+                    value={formData.personalDetails.dateOfBirth}
+                    onChange={handleChange}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Gender</label>
+                  <select
+                    name="personalDetails.gender"
+                    value={formData.personalDetails.gender}
+                    onChange={handleChange}
+                    className="form-input"
+                  >
+                    <option value="">Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Marital Status</label>
+                  <select
+                    name="personalDetails.maritalStatus"
+                    value={formData.personalDetails.maritalStatus}
+                    onChange={handleChange}
+                    className="form-input"
+                  >
+                    <option value="">Select</option>
+                    <option value="unmarried">Unmarried</option>
+                    <option value="divorced">Divorced</option>
+                    <option value="widowed">Widowed</option>
+                    <option value="separated">Separated</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label">Religion</label>
+                  <input
+                    name="personalDetails.religion"
+                    value={formData.personalDetails.religion}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter religion"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Caste</label>
+                  <input
+                    name="personalDetails.caste"
+                    value={formData.personalDetails.caste}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter caste"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Mother Tongue</label>
+                  <input
+                    name="personalDetails.motherTongue"
+                    value={formData.personalDetails.motherTongue}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter mother tongue"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Education</label>
+                  <input
+                    name="personalDetails.education"
+                    value={formData.personalDetails.education}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter education"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Occupation</label>
+                  <input
+                    name="personalDetails.occupation"
+                    value={formData.personalDetails.occupation}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter occupation"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Annual Income</label>
+                  <input
+                    name="personalDetails.annualIncome"
+                    type="number"
+                    value={formData.personalDetails.annualIncome}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter annual income"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Height (cm)</label>
+                  <input
+                    name="personalDetails.height"
+                    type="number"
+                    value={formData.personalDetails.height}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter height"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Weight (kg)</label>
+                  <input
+                    name="personalDetails.weight"
+                    type="number"
+                    value={formData.personalDetails.weight}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter weight"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">State</label>
+                  <input
+                    name="personalDetails.location.state"
+                    value={formData.personalDetails.location.state}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter state"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">City</label>
+                  <input
+                    name="personalDetails.location.city"
+                    value={formData.personalDetails.location.city}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter city"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="form-label">About Me</label>
+                  <textarea
+                    name="personalDetails.aboutMe"
+                    value={formData.personalDetails.aboutMe}
+                    onChange={handleChange}
+                    className="form-input"
+                    rows="3"
+                    placeholder="Tell us about yourself"
+                  />
+                </div>
+              </div>
+
+              <h3 className="text-lg font-semibold text-text-dark mt-6 mb-4 border-b pb-2">
+                Family Details
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="form-label">Father's Name</label>
+                  <input
+                    name="familyDetails.fatherName"
+                    value={formData.familyDetails.fatherName}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter father's name"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Mother's Name</label>
+                  <input
+                    name="familyDetails.motherName"
+                    value={formData.familyDetails.motherName}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter mother's name"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Brothers</label>
+                  <input
+                    name="familyDetails.brothers"
+                    type="number"
+                    value={formData.familyDetails.brothers}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="0"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Sisters</label>
+                  <input
+                    name="familyDetails.sisters"
+                    type="number"
+                    value={formData.familyDetails.sisters}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="0"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Family Background</label>
+                  <select
+                    name="familyDetails.familyBackground"
+                    value={formData.familyDetails.familyBackground}
+                    onChange={handleChange}
+                    className="form-input"
+                  >
+                    <option value="">Select</option>
+                    <option value="nuclear">Nuclear</option>
+                    <option value="joint">Joint</option>
+                    <option value="extended">Extended</option>
+                  </select>
+                </div>
+              </div>
+
+              <h3 className="text-lg font-semibold text-text-dark mt-6 mb-4 border-b pb-2">
+                Partner Preferences
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="form-label">Min Age</label>
+                  <input
+                    name="partnerPreferences.ageRange.min"
+                    type="number"
+                    value={formData.partnerPreferences.ageRange.min}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="18"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Max Age</label>
+                  <input
+                    name="partnerPreferences.ageRange.max"
+                    type="number"
+                    value={formData.partnerPreferences.ageRange.max}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="40"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Preferred Religion</label>
+                  <input
+                    name="partnerPreferences.religion"
+                    value={formData.partnerPreferences.religion}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter preferred religion"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Preferred Caste</label>
+                  <input
+                    name="partnerPreferences.caste"
+                    value={formData.partnerPreferences.caste}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter preferred caste"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Preferred Education</label>
+                  <input
+                    name="partnerPreferences.education"
+                    value={formData.partnerPreferences.education}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter preferred education"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Preferred Occupation</label>
+                  <input
+                    name="partnerPreferences.occupation"
+                    value={formData.partnerPreferences.occupation}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Enter preferred occupation"
+                  />
+                </div>
+              </div>
+
+              <h3 className="text-lg font-semibold text-text-dark mt-6 mb-4 border-b pb-2">
+                Property Details
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-4">
+                  <input
+                    type="checkbox"
+                    name="propertyDetails.hasAgriculturalLand"
+                    checked={formData.propertyDetails.hasAgriculturalLand}
+                    onChange={handleChange}
+                    className="w-5 h-5"
+                  />
+                  <label className="form-label mb-0">
+                    Has Agricultural Land
+                  </label>
+                </div>
+                {formData.propertyDetails.hasAgriculturalLand && (
+                  <div>
+                    <label className="form-label">
+                      Agricultural Land (acres)
+                    </label>
+                    <input
+                      name="propertyDetails.agriculturalLandAcres"
+                      type="number"
+                      value={formData.propertyDetails.agriculturalLandAcres}
+                      onChange={handleChange}
+                      className="form-input"
+                      placeholder="Enter acres"
+                    />
+                  </div>
+                )}
+                <div className="flex items-center space-x-4">
+                  <input
+                    type="checkbox"
+                    name="propertyDetails.hasResidentialProperty"
+                    checked={formData.propertyDetails.hasResidentialProperty}
+                    onChange={handleChange}
+                    className="w-5 h-5"
+                  />
+                  <label className="form-label mb-0">
+                    Has Residential Property
+                  </label>
+                </div>
+                {formData.propertyDetails.hasResidentialProperty && (
+                  <div>
+                    <label className="form-label">
+                      Residential Property Details
+                    </label>
+                    <textarea
+                      name="propertyDetails.residentialPropertyDetails"
+                      value={
+                        formData.propertyDetails.residentialPropertyDetails
+                      }
+                      onChange={handleChange}
+                      className="form-input"
+                      rows="2"
+                      placeholder="Enter property details"
+                    />
+                  </div>
+                )}
+                <div className="flex items-center space-x-4">
+                  <input
+                    type="checkbox"
+                    name="propertyDetails.hasCommercialProperty"
+                    checked={formData.propertyDetails.hasCommercialProperty}
+                    onChange={handleChange}
+                    className="w-5 h-5"
+                  />
+                  <label className="form-label mb-0">
+                    Has Commercial Property
+                  </label>
+                </div>
+                {formData.propertyDetails.hasCommercialProperty && (
+                  <div>
+                    <label className="form-label">
+                      Commercial Property Details
+                    </label>
+                    <textarea
+                      name="propertyDetails.commercialPropertyDetails"
+                      value={formData.propertyDetails.commercialPropertyDetails}
+                      onChange={handleChange}
+                      className="form-input"
+                      rows="2"
+                      placeholder="Enter property details"
+                    />
+                  </div>
+                )}
+                <div>
+                  <label className="form-label">Other Assets</label>
+                  <textarea
+                    name="propertyDetails.otherAssets"
+                    value={formData.propertyDetails.otherAssets}
+                    onChange={handleChange}
+                    className="form-input"
+                    rows="2"
+                    placeholder="Any other assets or investments..."
+                  />
+                </div>
+                <div>
+                  <label className="form-label">Property Description</label>
+                  <textarea
+                    name="propertyDetails.propertyDescription"
+                    value={formData.propertyDetails.propertyDescription}
+                    onChange={handleChange}
+                    className="form-input"
+                    rows="3"
+                    placeholder="Additional details about properties..."
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-4 mt-8 pt-6 border-t">
+                <button
+                  type="button"
+                  onClick={() => navigate("/admin/profiles")}
+                  className="px-6 py-3 rounded-xl border-2 border-gray-300 text-text-dark hover:border-primary-maroon transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="btn-maroon flex items-center space-x-2"
+                >
+                  {isSaving ? (
+                    <FaSpinner className="animate-spin" />
+                  ) : (
+                    <FaSave />
+                  )}
+                  <span>{isSaving ? "Saving..." : "Update Profile"}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+};
+
 // Dashboard Page
 const DashboardPage = () => {
   const [stats, setStats] = useState(null);
@@ -5435,6 +6399,13 @@ const DashboardPage = () => {
               >
                 <FaUsers className="text-2xl text-primary-maroon mx-auto mb-2" />
                 <span className="text-sm text-text-dark">Users</span>
+              </Link>
+              <Link
+                to="/admin/profiles"
+                className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 text-center"
+              >
+                <FaUser className="text-2xl text-primary-maroon mx-auto mb-2" />
+                <span className="text-sm text-text-dark">Profiles</span>
               </Link>
               <Link
                 to="/admin/interests"
@@ -6104,6 +7075,11 @@ function App() {
         {/* Admin Routes */}
         <Route path="/admin" element={<DashboardPage />} />
         <Route path="/admin/users" element={<UsersManagementPage />} />
+        <Route path="/admin/profiles" element={<AdminProfilesListPage />} />
+        <Route
+          path="/admin/edit-profile/:id"
+          element={<AdminEditProfilePage />}
+        />
         <Route path="/admin/callbacks" element={<CallbacksPage />} />
         <Route path="/admin/complaints" element={<ComplaintsPage />} />
         <Route path="/admin/interests" element={<AdminInterestsPage />} />

@@ -1015,6 +1015,225 @@ exports.updateSuccessStory = async (req, res) => {
   }
 };
 
+// ============================================================
+// ADMIN PROFILE MANAGEMENT - NEW FUNCTIONS
+// ============================================================
+
+// Get all profiles for admin (with user details)
+exports.getAllAdminProfiles = async (req, res) => {
+  try {
+    const { search, profileType, page = 1, limit = 50 } = req.query;
+
+    const query = {};
+    if (profileType) {
+      query.profileType = profileType;
+    }
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const [profiles, total] = await Promise.all([
+      Profile.find(query)
+        .populate("userId", "fullName mobileNumber")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .lean(),
+      Profile.countDocuments(query),
+    ]);
+
+    // Format profiles with user data
+    const formattedProfiles = profiles.map((profile) => {
+      const user = profile.userId || {};
+      return {
+        ...profile,
+        userId: user,
+        profileType: user.profileType || "self_registered",
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      profiles: formattedProfiles,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / parseInt(limit)),
+        totalItems: total,
+        itemsPerPage: parseInt(limit),
+      },
+    });
+  } catch (error) {
+    console.error("Get all admin profiles error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to get profiles",
+      error: error.message,
+    });
+  }
+};
+
+// Get single profile for admin (with user details)
+exports.getAdminProfileById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const profile = await Profile.findById(id)
+      .populate("userId", "-password")
+      .lean();
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: "Profile not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      profile,
+      user: profile.userId || null,
+    });
+  } catch (error) {
+    console.error("Get admin profile by ID error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to get profile",
+      error: error.message,
+    });
+  }
+};
+
+// Update profile (admin)
+exports.updateAdminProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      fullName,
+      mobileNumber,
+      personalDetails,
+      familyDetails,
+      partnerPreferences,
+      propertyDetails,
+    } = req.body;
+
+    const profile = await Profile.findById(id);
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: "Profile not found",
+      });
+    }
+
+    // Update user if mobile number changed
+    if (mobileNumber) {
+      const user = await User.findById(profile.userId);
+      if (user) {
+        user.fullName = fullName || user.fullName;
+        user.mobileNumber = mobileNumber;
+        await user.save();
+      }
+    }
+
+    // Update profile - all fields optional
+    if (personalDetails) {
+      profile.personalDetails = {
+        fullName: fullName || personalDetails.fullName || "",
+        age: parseInt(personalDetails.age) || 0,
+        dateOfBirth: personalDetails.dateOfBirth || new Date(),
+        gender: personalDetails.gender || "",
+        religion: personalDetails.religion || "",
+        caste: personalDetails.caste || "",
+        motherTongue: personalDetails.motherTongue || "",
+        education: personalDetails.education || "",
+        occupation: personalDetails.occupation || "",
+        annualIncome: parseInt(personalDetails.annualIncome) || 0,
+        maritalStatus: personalDetails.maritalStatus || "",
+        height: parseInt(personalDetails.height) || 0,
+        weight: parseInt(personalDetails.weight) || 0,
+        location: {
+          state: personalDetails.location?.state || "",
+          city: personalDetails.location?.city || "",
+        },
+        aboutMe: personalDetails.aboutMe || "",
+      };
+    }
+
+    if (familyDetails) {
+      profile.familyDetails = {
+        fatherName: familyDetails.fatherName || "",
+        motherName: familyDetails.motherName || "",
+        brothers: parseInt(familyDetails.brothers) || 0,
+        sisters: parseInt(familyDetails.sisters) || 0,
+        familyBackground: familyDetails.familyBackground || "",
+      };
+    }
+
+    if (partnerPreferences) {
+      profile.partnerPreferences = {
+        ageRange: {
+          min: parseInt(partnerPreferences.ageRange?.min) || 18,
+          max: parseInt(partnerPreferences.ageRange?.max) || 40,
+        },
+        religion: partnerPreferences.religion || "",
+        caste: partnerPreferences.caste || "",
+        education: partnerPreferences.education || "",
+        occupation: partnerPreferences.occupation || "",
+      };
+    }
+
+    if (propertyDetails) {
+      profile.propertyDetails = {
+        hasAgriculturalLand: propertyDetails.hasAgriculturalLand || false,
+        agriculturalLandAcres:
+          parseInt(propertyDetails.agriculturalLandAcres) || 0,
+        hasResidentialProperty: propertyDetails.hasResidentialProperty || false,
+        residentialPropertyDetails:
+          propertyDetails.residentialPropertyDetails || "",
+        hasCommercialProperty: propertyDetails.hasCommercialProperty || false,
+        commercialPropertyDetails:
+          propertyDetails.commercialPropertyDetails || "",
+        otherAssets: propertyDetails.otherAssets || "",
+        propertyDescription: propertyDetails.propertyDescription || "",
+      };
+    }
+
+    // Recalculate completion
+    const completionPercentage = profile.calculateCompletion();
+    profile.profileCompletionPercentage = completionPercentage;
+
+    const hasPhotos = profile.photos && profile.photos.length > 0;
+    if (completionPercentage >= 70 && hasPhotos) {
+      profile.isPublic = true;
+      profile.isProfileComplete = true;
+      await User.findByIdAndUpdate(profile.userId, {
+        isProfileComplete: true,
+        profileCompletionPercentage: completionPercentage,
+      });
+    } else {
+      profile.isPublic = false;
+      profile.isProfileComplete = false;
+      await User.findByIdAndUpdate(profile.userId, {
+        isProfileComplete: false,
+        profileCompletionPercentage: completionPercentage,
+      });
+    }
+
+    profile.updatedAt = new Date();
+    await profile.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      profile,
+    });
+  } catch (error) {
+    console.error("Update admin profile error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update profile",
+      error: error.message,
+    });
+  }
+};
+
 // ==================== MODULE EXPORTS ====================
 module.exports = {
   // Dashboard & Users
@@ -1026,6 +1245,11 @@ module.exports = {
   deleteUser: exports.deleteUser,
   deleteProfile: exports.deleteProfile,
   createBrokerProfile: exports.createBrokerProfile,
+
+  // Admin Profile Management - NEW
+  getAllAdminProfiles: exports.getAllAdminProfiles,
+  getAdminProfileById: exports.getAdminProfileById,
+  updateAdminProfile: exports.updateAdminProfile,
 
   // Callbacks
   getAllCallbacks: exports.getAllCallbacks,

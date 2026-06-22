@@ -7,42 +7,61 @@ const { authenticateToken, isAdmin } = require("../middleware/auth.middleware");
 router.use(authenticateToken);
 router.use(isAdmin);
 
-// Dashboard
+// ============================================================
+// DASHBOARD
+// ============================================================
 router.get("/dashboard/stats", adminController.getDashboardStats);
 
-// Users Management
+// ============================================================
+// USERS MANAGEMENT
+// ============================================================
 router.get("/users", adminController.getAllUsers);
 router.get("/users/:id", adminController.getUserDetails);
 router.put("/users/:id/suspend", adminController.suspendUser);
 router.put("/users/:id/unsuspend", adminController.unsuspendUser);
 router.delete("/users/:id", adminController.deleteUser);
 
-// Profile Management
+// ============================================================
+// PROFILE MANAGEMENT - NEW ROUTES
+// ============================================================
 router.post("/profiles/create", adminController.createBrokerProfile);
+router.get("/profiles/list", adminController.getAllAdminProfiles);
+router.get("/profiles/:id", adminController.getAdminProfileById);
+router.put("/profiles/:id", adminController.updateAdminProfile);
 router.delete("/profiles/:id", adminController.deleteProfile);
 
-// Callbacks Management
+// ============================================================
+// CALLBACKS MANAGEMENT
+// ============================================================
 router.get("/callbacks", adminController.getAllCallbacks);
 router.put("/callbacks/:id", adminController.updateCallbackStatus);
 
-// Complaints Management
+// ============================================================
+// COMPLAINTS MANAGEMENT
+// ============================================================
 router.get("/complaints", adminController.getAllComplaints);
 router.put("/complaints/:id", adminController.updateComplaintStatus);
 
-// Success Stories Management
+// ============================================================
+// SUCCESS STORIES MANAGEMENT
+// ============================================================
 router.post("/success-stories", adminController.createSuccessStory);
 router.get("/success-stories", adminController.getAllSuccessStories);
 router.put("/success-stories/:id", adminController.updateSuccessStory);
 router.put("/success-stories/:id/approve", adminController.approveSuccessStory);
 router.delete("/success-stories/:id", adminController.deleteSuccessStory);
 
-// Testimonials Management
+// ============================================================
+// TESTIMONIALS MANAGEMENT
+// ============================================================
 router.get("/testimonials", adminController.getAllTestimonials);
 router.post("/testimonials", adminController.createTestimonial);
 router.put("/testimonials/:id", adminController.updateTestimonial);
 router.delete("/testimonials/:id", adminController.deleteTestimonial);
 
-// Interests Management
+// ============================================================
+// INTERESTS MANAGEMENT
+// ============================================================
 router.get("/interests", adminController.getAllInterests);
 router.put("/interests/:id", adminController.updateInterestStatus);
 
