@@ -2424,8 +2424,8 @@ const ViewProfilePage = () => {
   const photos = p.photos || [];
 
   // Broker contact details
-  const brokerPhone = "+919876543210";
-  const brokerWhatsApp = "919876543210";
+  const brokerPhone = "+919110480411";
+  const brokerWhatsApp = "918123427060";
 
   return (
     <Layout>
