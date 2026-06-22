@@ -84,10 +84,10 @@ const BrokerOfficePage = () => {
                     <div>
                       <p className="text-text-dark font-medium">Email</p>
                       <a
-                        href="mailto:info@shubhamangalam.com"
+                        href="mailto:shubhamangalam79@gmail.com"
                         className="text-text-light text-sm hover:text-primary-maroon"
                       >
-                        info@shubhamangalam.com
+                        shubhamangalam79@gmail.com
                       </a>
                     </div>
                   </div>

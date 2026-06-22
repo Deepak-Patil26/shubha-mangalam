@@ -127,7 +127,7 @@ const TermsPage = () => {
                   contact us at:
                 </p>
                 <p className="text-text-light mt-2">
-                  Email: info@shubhamangalam.com
+                  Email: shubhamangalam79@gmail.com
                   <br />
                   Phone: +91 91104 80411
                 </p>
