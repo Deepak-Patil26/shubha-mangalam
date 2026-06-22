@@ -2202,6 +2202,8 @@ const ViewProfilePage = () => {
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const [viewCount, setViewCount] = useState(0);
+  const [showInterestPopup, setShowInterestPopup] = useState(false);
+  const [isSendingInterest, setIsSendingInterest] = useState(false);
   const autoPlayRef = useRef(null);
   const viewTrackedRef = useRef(false);
 
@@ -2307,6 +2309,7 @@ const ViewProfilePage = () => {
   };
 
   const handleSendInterest = async () => {
+    setIsSendingInterest(true);
     try {
       await axios.post(
         `${API_URL}/interests/send`,
@@ -2316,9 +2319,14 @@ const ViewProfilePage = () => {
         },
         getHeaders(),
       );
+
+      // Show the interest popup immediately after successful interest send
+      setShowInterestPopup(true);
       toast.success("Interest sent successfully!");
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to send interest");
+    } finally {
+      setIsSendingInterest(false);
     }
   };
 
@@ -2415,6 +2423,10 @@ const ViewProfilePage = () => {
   const name = pd.fullName || "Unknown";
   const photos = p.photos || [];
 
+  // Broker contact details
+  const brokerPhone = "+919876543210";
+  const brokerWhatsApp = "919876543210";
+
   return (
     <Layout>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4">
@@ -2472,10 +2484,17 @@ const ViewProfilePage = () => {
                   <div className="mt-6 space-y-3">
                     <button
                       onClick={handleSendInterest}
-                      className="btn-maroon w-full flex items-center justify-center space-x-2 transition-all hover:scale-[1.02] hover:shadow-lg"
+                      disabled={isSendingInterest}
+                      className="btn-maroon w-full flex items-center justify-center space-x-2 transition-all hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <FaHeart />
-                      <span>Send Interest</span>
+                      {isSendingInterest ? (
+                        <FaSpinner className="animate-spin" />
+                      ) : (
+                        <FaHeart />
+                      )}
+                      <span>
+                        {isSendingInterest ? "Sending..." : "Send Interest"}
+                      </span>
                     </button>
                     <button
                       onClick={handleSaveProfile}
@@ -2914,6 +2933,84 @@ const ViewProfilePage = () => {
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ===== INTEREST POPUP MODAL ===== */}
+      {showInterestPopup && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[999] flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl transform transition-all duration-500 scale-100 animate-slide-up">
+            {/* Close button */}
+            <button
+              onClick={() => setShowInterestPopup(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <FaTimes className="text-xl" />
+            </button>
+
+            {/* Success Icon */}
+            <div className="flex justify-center mb-4">
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+                <FaHeart className="text-4xl text-primary-maroon animate-pulse" />
+              </div>
+            </div>
+
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-text-dark mb-2">
+                Interest Sent! ❤️
+              </h3>
+              <p className="text-text-light text-sm">
+                Your interest has been sent to{" "}
+                <span className="font-semibold text-text-dark">{name}</span>.
+                The broker will facilitate the connection.
+              </p>
+            </div>
+
+            <div className="border-t border-gray-100 pt-6">
+              <p className="text-sm text-text-light text-center mb-4">
+                Contact the broker to discuss this profile:
+              </p>
+              <div className="flex flex-col gap-3">
+                {/* Call Broker Button */}
+                <a
+                  href={`tel:${brokerPhone}`}
+                  className="flex items-center justify-center gap-3 px-6 py-4 bg-primary-maroon text-white rounded-xl hover:bg-[#600018] transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+                >
+                  <FaPhone className="text-lg" />
+                  <span className="font-medium">Call Broker</span>
+                </a>
+
+                {/* WhatsApp Broker Button */}
+                <a
+                  href={`https://wa.me/${brokerWhatsApp}?text=${encodeURIComponent(
+                    `Hi, I am interested in the profile of ${name} (Profile ID: ${id}). Please help me connect with them.`,
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-3 px-6 py-4 bg-[#25D366] text-white rounded-xl hover:bg-[#1DA851] transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+                >
+                  <FaWhatsapp className="text-lg" />
+                  <span className="font-medium">Chat on WhatsApp</span>
+                </a>
+
+                {/* Continue Browsing Button */}
+                <button
+                  onClick={() => {
+                    setShowInterestPopup(false);
+                    navigate("/search");
+                  }}
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-text-dark rounded-xl hover:bg-gray-200 transition-all duration-300"
+                >
+                  <span>Continue Browsing</span>
+                  <FaArrowRight className="text-sm" />
+                </button>
+              </div>
+            </div>
+
+            <p className="text-xs text-text-light text-center mt-4">
+              The broker will assist you with the matchmaking process.
+            </p>
           </div>
         </div>
       )}
