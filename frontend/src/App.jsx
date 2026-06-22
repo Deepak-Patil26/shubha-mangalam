@@ -4627,7 +4627,7 @@ const ProfileCompletionPage = () => {
 
 // ==================== ADMIN PAGES ====================
 
-// Add Profile Page
+// ==================== ADMIN - ADD PROFILE PAGE ====================
 const AddProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState([]);
@@ -5002,24 +5002,24 @@ const AddProfilePage = () => {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="form-label">Full Name *</label>
+                  <label className="form-label">Full Name</label>
                   <input
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter full name"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Mobile Number *</label>
+                  <label className="form-label">Mobile Number</label>
                   <input
                     name="mobileNumber"
                     type="tel"
                     value={formData.mobileNumber}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter mobile number"
                   />
                 </div>
                 <div>
@@ -5040,35 +5040,33 @@ const AddProfilePage = () => {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="form-label">Age *</label>
+                  <label className="form-label">Age</label>
                   <input
                     name="personalDetails.age"
                     type="number"
                     value={formData.personalDetails.age}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter age"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Date of Birth *</label>
+                  <label className="form-label">Date of Birth</label>
                   <input
                     name="personalDetails.dateOfBirth"
                     type="date"
                     value={formData.personalDetails.dateOfBirth}
                     onChange={handleChange}
                     className="form-input"
-                    required
                   />
                 </div>
                 <div>
-                  <label className="form-label">Gender *</label>
+                  <label className="form-label">Gender</label>
                   <select
                     name="personalDetails.gender"
                     value={formData.personalDetails.gender}
                     onChange={handleChange}
                     className="form-input"
-                    required
                   >
                     <option value="">Select</option>
                     <option value="male">Male</option>
@@ -5077,74 +5075,73 @@ const AddProfilePage = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Religion *</label>
+                  <label className="form-label">Religion</label>
                   <input
                     name="personalDetails.religion"
                     value={formData.personalDetails.religion}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter religion"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Caste *</label>
+                  <label className="form-label">Caste</label>
                   <input
                     name="personalDetails.caste"
                     value={formData.personalDetails.caste}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter caste"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Mother Tongue *</label>
+                  <label className="form-label">Mother Tongue</label>
                   <input
                     name="personalDetails.motherTongue"
                     value={formData.personalDetails.motherTongue}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter mother tongue"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Education *</label>
+                  <label className="form-label">Education</label>
                   <input
                     name="personalDetails.education"
                     value={formData.personalDetails.education}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter education"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Occupation *</label>
+                  <label className="form-label">Occupation</label>
                   <input
                     name="personalDetails.occupation"
                     value={formData.personalDetails.occupation}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter occupation"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Annual Income *</label>
+                  <label className="form-label">Annual Income</label>
                   <input
                     name="personalDetails.annualIncome"
                     type="number"
                     value={formData.personalDetails.annualIncome}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter annual income"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Marital Status *</label>
+                  <label className="form-label">Marital Status</label>
                   <select
                     name="personalDetails.maritalStatus"
                     value={formData.personalDetails.maritalStatus}
                     onChange={handleChange}
                     className="form-input"
-                    required
                   >
                     <option value="">Select</option>
                     <option value="unmarried">Unmarried</option>
@@ -5154,45 +5151,45 @@ const AddProfilePage = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Height (cm) *</label>
+                  <label className="form-label">Height (cm)</label>
                   <input
                     name="personalDetails.height"
                     type="number"
                     value={formData.personalDetails.height}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter height"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Weight (kg) *</label>
+                  <label className="form-label">Weight (kg)</label>
                   <input
                     name="personalDetails.weight"
                     type="number"
                     value={formData.personalDetails.weight}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter weight"
                   />
                 </div>
                 <div>
-                  <label className="form-label">State *</label>
+                  <label className="form-label">State</label>
                   <input
                     name="personalDetails.location.state"
                     value={formData.personalDetails.location.state}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter state"
                   />
                 </div>
                 <div>
-                  <label className="form-label">City *</label>
+                  <label className="form-label">City</label>
                   <input
                     name="personalDetails.location.city"
                     value={formData.personalDetails.location.city}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter city"
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -5203,6 +5200,7 @@ const AddProfilePage = () => {
                     onChange={handleChange}
                     className="form-input"
                     rows="2"
+                    placeholder="Tell us about yourself"
                   />
                 </div>
               </div>
@@ -5212,23 +5210,23 @@ const AddProfilePage = () => {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="form-label">Father's Name *</label>
+                  <label className="form-label">Father's Name</label>
                   <input
                     name="familyDetails.fatherName"
                     value={formData.familyDetails.fatherName}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter father's name"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Mother's Name *</label>
+                  <label className="form-label">Mother's Name</label>
                   <input
                     name="familyDetails.motherName"
                     value={formData.familyDetails.motherName}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter mother's name"
                   />
                 </div>
                 <div>
@@ -5239,6 +5237,7 @@ const AddProfilePage = () => {
                     value={formData.familyDetails.brothers}
                     onChange={handleChange}
                     className="form-input"
+                    placeholder="0"
                   />
                 </div>
                 <div>
@@ -5249,16 +5248,16 @@ const AddProfilePage = () => {
                     value={formData.familyDetails.sisters}
                     onChange={handleChange}
                     className="form-input"
+                    placeholder="0"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Family Background *</label>
+                  <label className="form-label">Family Background</label>
                   <select
                     name="familyDetails.familyBackground"
                     value={formData.familyDetails.familyBackground}
                     onChange={handleChange}
                     className="form-input"
-                    required
                   >
                     <option value="">Select</option>
                     <option value="nuclear">Nuclear</option>
@@ -5273,65 +5272,65 @@ const AddProfilePage = () => {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="form-label">Min Age *</label>
+                  <label className="form-label">Min Age</label>
                   <input
                     name="partnerPreferences.ageRange.min"
                     type="number"
                     value={formData.partnerPreferences.ageRange.min}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="18"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Max Age *</label>
+                  <label className="form-label">Max Age</label>
                   <input
                     name="partnerPreferences.ageRange.max"
                     type="number"
                     value={formData.partnerPreferences.ageRange.max}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="40"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Preferred Religion *</label>
+                  <label className="form-label">Preferred Religion</label>
                   <input
                     name="partnerPreferences.religion"
                     value={formData.partnerPreferences.religion}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter preferred religion"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Preferred Caste *</label>
+                  <label className="form-label">Preferred Caste</label>
                   <input
                     name="partnerPreferences.caste"
                     value={formData.partnerPreferences.caste}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter preferred caste"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Preferred Education *</label>
+                  <label className="form-label">Preferred Education</label>
                   <input
                     name="partnerPreferences.education"
                     value={formData.partnerPreferences.education}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter preferred education"
                   />
                 </div>
                 <div>
-                  <label className="form-label">Preferred Occupation *</label>
+                  <label className="form-label">Preferred Occupation</label>
                   <input
                     name="partnerPreferences.occupation"
                     value={formData.partnerPreferences.occupation}
                     onChange={handleChange}
                     className="form-input"
-                    required
+                    placeholder="Enter preferred occupation"
                   />
                 </div>
               </div>

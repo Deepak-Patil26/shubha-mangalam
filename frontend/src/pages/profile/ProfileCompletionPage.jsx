@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useForm, useFieldArray } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+import { useForm } from "react-hook-form";
 import {
   FaUser,
   FaCalendar,
@@ -17,7 +15,6 @@ import {
   FaMapMarkerAlt,
   FaUserFriends,
   FaHome,
-  FaBuilding,
   FaHeart,
   FaCamera,
   FaUpload,
@@ -37,61 +34,6 @@ import { setProfileComplete } from "../../store/slices/authSlice";
 import Layout from "../../components/common/Layout";
 import { toast } from "react-toastify";
 
-const schema = yup.object().shape({
-  personalDetails: yup.object().shape({
-    fullName: yup.string().required("Full name is required"),
-    age: yup
-      .number()
-      .required("Age is required")
-      .min(18, "Must be at least 18")
-      .max(100, "Invalid age"),
-    dateOfBirth: yup.string().required("Date of birth is required"),
-    gender: yup
-      .string()
-      .required("Gender is required")
-      .oneOf(["male", "female", "other"]),
-    religion: yup.string().required("Religion is required"),
-    caste: yup.string().required("Caste is required"),
-    motherTongue: yup.string().required("Mother tongue is required"),
-    education: yup.string().required("Education is required"),
-    occupation: yup.string().required("Occupation is required"),
-    annualIncome: yup.number().required("Annual income is required").min(0),
-    maritalStatus: yup.string().required("Marital status is required"),
-    height: yup
-      .number()
-      .required("Height is required")
-      .min(100, "Height must be in cm")
-      .max(250, "Invalid height"),
-    weight: yup
-      .number()
-      .required("Weight is required")
-      .min(30, "Weight must be in kg")
-      .max(300, "Invalid weight"),
-    location: yup.object().shape({
-      state: yup.string().required("State is required"),
-      city: yup.string().required("City is required"),
-    }),
-    aboutMe: yup.string().max(1000, "Maximum 1000 characters"),
-  }),
-  familyDetails: yup.object().shape({
-    fatherName: yup.string().required("Father name is required"),
-    motherName: yup.string().required("Mother name is required"),
-    brothers: yup.number().min(0),
-    sisters: yup.number().min(0),
-    familyBackground: yup.string().required("Family background is required"),
-  }),
-  partnerPreferences: yup.object().shape({
-    ageRange: yup.object().shape({
-      min: yup.number().required("Minimum age is required").min(18),
-      max: yup.number().required("Maximum age is required").max(100),
-    }),
-    religion: yup.string().required("Religion preference is required"),
-    caste: yup.string().required("Caste preference is required"),
-    education: yup.string().required("Education preference is required"),
-    occupation: yup.string().required("Occupation preference is required"),
-  }),
-});
-
 const steps = [
   { id: 1, title: "Personal Details", icon: FaUser },
   { id: 2, title: "Family Details", icon: FaUserFriends },
@@ -106,7 +48,6 @@ const ProfileCompletionPage = () => {
   const { user } = useSelector((state) => state.auth);
   const { isLoading } = useSelector((state) => state.profile);
   const [currentStep, setCurrentStep] = useState(1);
-  const [photos, setPhotos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState([]);
 
@@ -118,7 +59,6 @@ const ProfileCompletionPage = () => {
     getValues,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
     defaultValues: {
       personalDetails: {
         location: { state: "", city: "" },
@@ -142,7 +82,6 @@ const ProfileCompletionPage = () => {
     }
 
     try {
-      // Upload photos first
       let uploadedPhotos = [];
       if (selectedPhotos.length > 0) {
         setUploading(true);
@@ -155,7 +94,6 @@ const ProfileCompletionPage = () => {
         setUploading(false);
       }
 
-      // Save profile
       const profileData = {
         ...data,
         photos: uploadedPhotos,
@@ -174,6 +112,14 @@ const ProfileCompletionPage = () => {
 
   const handlePhotoUpload = (event) => {
     const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+
+    const totalPhotos = selectedPhotos.length + files.length;
+    if (totalPhotos > 4) {
+      toast.error("You can upload a maximum of 4 photos only!");
+      return;
+    }
+
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -212,12 +158,8 @@ const ProfileCompletionPage = () => {
           <input
             {...register("personalDetails.fullName")}
             className="form-input"
+            placeholder="Enter your full name"
           />
-          {errors.personalDetails?.fullName && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.fullName.message}
-            </p>
-          )}
         </div>
         <div>
           <label className="form-label">Age</label>
@@ -225,12 +167,8 @@ const ProfileCompletionPage = () => {
             type="number"
             {...register("personalDetails.age")}
             className="form-input"
+            placeholder="Enter your age"
           />
-          {errors.personalDetails?.age && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.age.message}
-            </p>
-          )}
         </div>
       </div>
 
@@ -241,11 +179,6 @@ const ProfileCompletionPage = () => {
           {...register("personalDetails.dateOfBirth")}
           className="form-input"
         />
-        {errors.personalDetails?.dateOfBirth && (
-          <p className="text-red-500 text-sm">
-            {errors.personalDetails.dateOfBirth.message}
-          </p>
-        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -260,11 +193,6 @@ const ProfileCompletionPage = () => {
             <option value="female">Female</option>
             <option value="other">Other</option>
           </select>
-          {errors.personalDetails?.gender && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.gender.message}
-            </p>
-          )}
         </div>
         <div>
           <label className="form-label">Marital Status</label>
@@ -278,11 +206,6 @@ const ProfileCompletionPage = () => {
             <option value="widowed">Widowed</option>
             <option value="separated">Separated</option>
           </select>
-          {errors.personalDetails?.maritalStatus && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.maritalStatus.message}
-            </p>
-          )}
         </div>
       </div>
 
@@ -292,24 +215,16 @@ const ProfileCompletionPage = () => {
           <input
             {...register("personalDetails.religion")}
             className="form-input"
+            placeholder="Enter your religion"
           />
-          {errors.personalDetails?.religion && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.religion.message}
-            </p>
-          )}
         </div>
         <div>
           <label className="form-label">Caste</label>
           <input
             {...register("personalDetails.caste")}
             className="form-input"
+            placeholder="Enter your caste"
           />
-          {errors.personalDetails?.caste && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.caste.message}
-            </p>
-          )}
         </div>
       </div>
 
@@ -318,12 +233,8 @@ const ProfileCompletionPage = () => {
         <input
           {...register("personalDetails.motherTongue")}
           className="form-input"
+          placeholder="Enter your mother tongue"
         />
-        {errors.personalDetails?.motherTongue && (
-          <p className="text-red-500 text-sm">
-            {errors.personalDetails.motherTongue.message}
-          </p>
-        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -332,24 +243,16 @@ const ProfileCompletionPage = () => {
           <input
             {...register("personalDetails.education")}
             className="form-input"
+            placeholder="Enter your education"
           />
-          {errors.personalDetails?.education && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.education.message}
-            </p>
-          )}
         </div>
         <div>
           <label className="form-label">Occupation</label>
           <input
             {...register("personalDetails.occupation")}
             className="form-input"
+            placeholder="Enter your occupation"
           />
-          {errors.personalDetails?.occupation && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.occupation.message}
-            </p>
-          )}
         </div>
       </div>
 
@@ -359,12 +262,8 @@ const ProfileCompletionPage = () => {
           type="number"
           {...register("personalDetails.annualIncome")}
           className="form-input"
+          placeholder="Enter your annual income"
         />
-        {errors.personalDetails?.annualIncome && (
-          <p className="text-red-500 text-sm">
-            {errors.personalDetails.annualIncome.message}
-          </p>
-        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -374,12 +273,8 @@ const ProfileCompletionPage = () => {
             type="number"
             {...register("personalDetails.height")}
             className="form-input"
+            placeholder="Enter your height"
           />
-          {errors.personalDetails?.height && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.height.message}
-            </p>
-          )}
         </div>
         <div>
           <label className="form-label">Weight (kg)</label>
@@ -387,12 +282,8 @@ const ProfileCompletionPage = () => {
             type="number"
             {...register("personalDetails.weight")}
             className="form-input"
+            placeholder="Enter your weight"
           />
-          {errors.personalDetails?.weight && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.weight.message}
-            </p>
-          )}
         </div>
       </div>
 
@@ -402,24 +293,16 @@ const ProfileCompletionPage = () => {
           <input
             {...register("personalDetails.location.state")}
             className="form-input"
+            placeholder="Enter your state"
           />
-          {errors.personalDetails?.location?.state && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.location.state.message}
-            </p>
-          )}
         </div>
         <div>
           <label className="form-label">City</label>
           <input
             {...register("personalDetails.location.city")}
             className="form-input"
+            placeholder="Enter your city"
           />
-          {errors.personalDetails?.location?.city && (
-            <p className="text-red-500 text-sm">
-              {errors.personalDetails.location.city.message}
-            </p>
-          )}
         </div>
       </div>
 
@@ -431,11 +314,6 @@ const ProfileCompletionPage = () => {
           rows="4"
           placeholder="Tell us about yourself..."
         />
-        {errors.personalDetails?.aboutMe && (
-          <p className="text-red-500 text-sm">
-            {errors.personalDetails.aboutMe.message}
-          </p>
-        )}
       </div>
     </div>
   );
@@ -448,24 +326,16 @@ const ProfileCompletionPage = () => {
           <input
             {...register("familyDetails.fatherName")}
             className="form-input"
+            placeholder="Enter father's name"
           />
-          {errors.familyDetails?.fatherName && (
-            <p className="text-red-500 text-sm">
-              {errors.familyDetails.fatherName.message}
-            </p>
-          )}
         </div>
         <div>
           <label className="form-label">Mother's Name</label>
           <input
             {...register("familyDetails.motherName")}
             className="form-input"
+            placeholder="Enter mother's name"
           />
-          {errors.familyDetails?.motherName && (
-            <p className="text-red-500 text-sm">
-              {errors.familyDetails.motherName.message}
-            </p>
-          )}
         </div>
       </div>
 
@@ -476,6 +346,7 @@ const ProfileCompletionPage = () => {
             type="number"
             {...register("familyDetails.brothers")}
             className="form-input"
+            placeholder="0"
           />
         </div>
         <div>
@@ -484,6 +355,7 @@ const ProfileCompletionPage = () => {
             type="number"
             {...register("familyDetails.sisters")}
             className="form-input"
+            placeholder="0"
           />
         </div>
       </div>
@@ -499,11 +371,6 @@ const ProfileCompletionPage = () => {
           <option value="joint">Joint Family</option>
           <option value="extended">Extended Family</option>
         </select>
-        {errors.familyDetails?.familyBackground && (
-          <p className="text-red-500 text-sm">
-            {errors.familyDetails.familyBackground.message}
-          </p>
-        )}
       </div>
     </div>
   );
@@ -517,12 +384,8 @@ const ProfileCompletionPage = () => {
             type="number"
             {...register("partnerPreferences.ageRange.min")}
             className="form-input"
+            placeholder="18"
           />
-          {errors.partnerPreferences?.ageRange?.min && (
-            <p className="text-red-500 text-sm">
-              {errors.partnerPreferences.ageRange.min.message}
-            </p>
-          )}
         </div>
         <div>
           <label className="form-label">Maximum Age</label>
@@ -530,12 +393,8 @@ const ProfileCompletionPage = () => {
             type="number"
             {...register("partnerPreferences.ageRange.max")}
             className="form-input"
+            placeholder="40"
           />
-          {errors.partnerPreferences?.ageRange?.max && (
-            <p className="text-red-500 text-sm">
-              {errors.partnerPreferences.ageRange.max.message}
-            </p>
-          )}
         </div>
       </div>
 
@@ -544,12 +403,8 @@ const ProfileCompletionPage = () => {
         <input
           {...register("partnerPreferences.religion")}
           className="form-input"
+          placeholder="Enter preferred religion"
         />
-        {errors.partnerPreferences?.religion && (
-          <p className="text-red-500 text-sm">
-            {errors.partnerPreferences.religion.message}
-          </p>
-        )}
       </div>
 
       <div>
@@ -557,12 +412,8 @@ const ProfileCompletionPage = () => {
         <input
           {...register("partnerPreferences.caste")}
           className="form-input"
+          placeholder="Enter preferred caste"
         />
-        {errors.partnerPreferences?.caste && (
-          <p className="text-red-500 text-sm">
-            {errors.partnerPreferences.caste.message}
-          </p>
-        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -571,24 +422,16 @@ const ProfileCompletionPage = () => {
           <input
             {...register("partnerPreferences.education")}
             className="form-input"
+            placeholder="Enter preferred education"
           />
-          {errors.partnerPreferences?.education && (
-            <p className="text-red-500 text-sm">
-              {errors.partnerPreferences.education.message}
-            </p>
-          )}
         </div>
         <div>
           <label className="form-label">Preferred Occupation</label>
           <input
             {...register("partnerPreferences.occupation")}
             className="form-input"
+            placeholder="Enter preferred occupation"
           />
-          {errors.partnerPreferences?.occupation && (
-            <p className="text-red-500 text-sm">
-              {errors.partnerPreferences.occupation.message}
-            </p>
-          )}
         </div>
       </div>
     </div>
@@ -611,6 +454,7 @@ const ProfileCompletionPage = () => {
             type="number"
             {...register("propertyDetails.agriculturalLandAcres")}
             className="form-input"
+            placeholder="Enter acres"
           />
         </div>
       )}
@@ -630,6 +474,7 @@ const ProfileCompletionPage = () => {
             {...register("propertyDetails.residentialPropertyDetails")}
             className="form-input"
             rows="2"
+            placeholder="Enter property details"
           />
         </div>
       )}
@@ -649,6 +494,7 @@ const ProfileCompletionPage = () => {
             {...register("propertyDetails.commercialPropertyDetails")}
             className="form-input"
             rows="2"
+            placeholder="Enter property details"
           />
         </div>
       )}
@@ -681,7 +527,7 @@ const ProfileCompletionPage = () => {
         <FaUpload className="text-5xl text-gray-400 mx-auto mb-4" />
         <p className="text-text-dark font-medium mb-2">Upload Profile Photos</p>
         <p className="text-text-light text-sm mb-4">
-          Upload at least 1 photo (Maximum 4 photos allowed)
+          Upload up to 4 photos (Max 4 photos allowed)
         </p>
         <input
           type="file"
@@ -753,7 +599,6 @@ const ProfileCompletionPage = () => {
             </p>
           </div>
 
-          {/* Progress Steps */}
           <div className="flex justify-between mb-8 relative">
             {steps.map((step, index) => {
               const isActive = currentStep === step.id;

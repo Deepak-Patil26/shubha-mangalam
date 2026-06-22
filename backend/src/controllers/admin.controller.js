@@ -388,7 +388,7 @@ exports.deleteProfile = async (req, res) => {
   }
 };
 
-// Create profile for offline client (admin only)
+// Create profile for offline client (admin only) - NO VALIDATION
 exports.createBrokerProfile = async (req, res) => {
   try {
     const {
@@ -409,7 +409,7 @@ exports.createBrokerProfile = async (req, res) => {
     }
 
     user = new User({
-      fullName,
+      fullName: fullName || "User",
       mobileNumber,
       password: password || "Broker@123",
       role: "user",
@@ -423,7 +423,7 @@ exports.createBrokerProfile = async (req, res) => {
     const profile = new Profile({
       userId: user._id,
       personalDetails: {
-        fullName: fullName,
+        fullName: fullName || "",
         age: parseInt(personalDetails?.age) || 0,
         dateOfBirth: personalDetails?.dateOfBirth || new Date(),
         gender: personalDetails?.gender || "",

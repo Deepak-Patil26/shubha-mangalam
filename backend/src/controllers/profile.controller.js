@@ -9,14 +9,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Create or update profile
+// Create or update profile - NO VALIDATION
 exports.createOrUpdateProfile = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     const userId = req.user.id;
     const profileData = req.body;
 
@@ -25,39 +20,35 @@ exports.createOrUpdateProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Parse data
+    // Parse data - handle empty values gracefully
     if (profileData.personalDetails) {
       if (profileData.personalDetails.age) {
-        profileData.personalDetails.age = parseInt(
-          profileData.personalDetails.age,
-        );
+        profileData.personalDetails.age =
+          parseInt(profileData.personalDetails.age) || 0;
       }
       if (profileData.personalDetails.annualIncome) {
-        profileData.personalDetails.annualIncome = parseInt(
-          profileData.personalDetails.annualIncome,
-        );
+        profileData.personalDetails.annualIncome =
+          parseInt(profileData.personalDetails.annualIncome) || 0;
       }
       if (profileData.personalDetails.height) {
-        profileData.personalDetails.height = parseInt(
-          profileData.personalDetails.height,
-        );
+        profileData.personalDetails.height =
+          parseInt(profileData.personalDetails.height) || 0;
       }
       if (profileData.personalDetails.weight) {
-        profileData.personalDetails.weight = parseInt(
-          profileData.personalDetails.weight,
-        );
+        profileData.personalDetails.weight =
+          parseInt(profileData.personalDetails.weight) || 0;
       }
     }
 
-    if (profileData.familyDetails && profileData.familyDetails.brothers) {
-      profileData.familyDetails.brothers = parseInt(
-        profileData.familyDetails.brothers,
-      );
-    }
-    if (profileData.familyDetails && profileData.familyDetails.sisters) {
-      profileData.familyDetails.sisters = parseInt(
-        profileData.familyDetails.sisters,
-      );
+    if (profileData.familyDetails) {
+      if (profileData.familyDetails.brothers) {
+        profileData.familyDetails.brothers =
+          parseInt(profileData.familyDetails.brothers) || 0;
+      }
+      if (profileData.familyDetails.sisters) {
+        profileData.familyDetails.sisters =
+          parseInt(profileData.familyDetails.sisters) || 0;
+      }
     }
 
     if (profileData.propertyDetails) {
@@ -77,9 +68,8 @@ exports.createOrUpdateProfile = async (req, res) => {
           profileData.propertyDetails.hasCommercialProperty === true;
       }
       if (profileData.propertyDetails.agriculturalLandAcres) {
-        profileData.propertyDetails.agriculturalLandAcres = parseInt(
-          profileData.propertyDetails.agriculturalLandAcres,
-        );
+        profileData.propertyDetails.agriculturalLandAcres =
+          parseInt(profileData.propertyDetails.agriculturalLandAcres) || 0;
       }
     }
 
@@ -88,14 +78,12 @@ exports.createOrUpdateProfile = async (req, res) => {
       profileData.partnerPreferences.ageRange
     ) {
       if (profileData.partnerPreferences.ageRange.min) {
-        profileData.partnerPreferences.ageRange.min = parseInt(
-          profileData.partnerPreferences.ageRange.min,
-        );
+        profileData.partnerPreferences.ageRange.min =
+          parseInt(profileData.partnerPreferences.ageRange.min) || 18;
       }
       if (profileData.partnerPreferences.ageRange.max) {
-        profileData.partnerPreferences.ageRange.max = parseInt(
-          profileData.partnerPreferences.ageRange.max,
-        );
+        profileData.partnerPreferences.ageRange.max =
+          parseInt(profileData.partnerPreferences.ageRange.max) || 40;
       }
     }
 
@@ -118,11 +106,6 @@ exports.createOrUpdateProfile = async (req, res) => {
     const hasPhotos = profile.photos && profile.photos.length > 0;
     const isCompleteEnough = completionPercentage >= 70;
 
-    console.log(`📊 Profile completion check for user ${userId}:`);
-    console.log(`   - Completion: ${completionPercentage}%`);
-    console.log(`   - Has photos: ${hasPhotos}`);
-    console.log(`   - Is complete enough: ${isCompleteEnough}`);
-
     if (isCompleteEnough && hasPhotos) {
       profile.isPublic = true;
       profile.isProfileComplete = true;
@@ -130,7 +113,6 @@ exports.createOrUpdateProfile = async (req, res) => {
         isProfileComplete: true,
         profileCompletionPercentage: completionPercentage,
       });
-      console.log(`✅ Profile is now PUBLIC for user ${userId}`);
     } else {
       profile.isPublic = false;
       profile.isProfileComplete = false;
@@ -138,7 +120,6 @@ exports.createOrUpdateProfile = async (req, res) => {
         isProfileComplete: false,
         profileCompletionPercentage: completionPercentage,
       });
-      console.log(`❌ Profile is PRIVATE for user ${userId}`);
     }
 
     await profile.save();
@@ -366,41 +347,41 @@ exports.uploadPhotos = async (req, res) => {
       profile = new Profile({
         userId: userId,
         personalDetails: {
-          fullName: user?.fullName || "User",
-          age: 25,
-          dateOfBirth: new Date("1999-01-01"),
-          gender: "male",
-          religion: "Hindu",
-          caste: "General",
-          motherTongue: "English",
-          education: "Bachelor's Degree",
-          occupation: "Software Engineer",
-          annualIncome: 500000,
-          maritalStatus: "unmarried",
-          height: 170,
-          weight: 70,
+          fullName: user?.fullName || "",
+          age: 0,
+          dateOfBirth: new Date(),
+          gender: "",
+          religion: "",
+          caste: "",
+          motherTongue: "",
+          education: "",
+          occupation: "",
+          annualIncome: 0,
+          maritalStatus: "",
+          height: 0,
+          weight: 0,
           location: {
-            state: "Karnataka",
-            city: "Bidar",
+            state: "",
+            city: "",
           },
-          aboutMe: "Looking for a life partner.",
+          aboutMe: "",
         },
         familyDetails: {
-          fatherName: "Father",
-          motherName: "Mother",
+          fatherName: "",
+          motherName: "",
           brothers: 0,
           sisters: 0,
-          familyBackground: "nuclear",
+          familyBackground: "",
         },
         partnerPreferences: {
           ageRange: {
-            min: 22,
-            max: 35,
+            min: 18,
+            max: 40,
           },
-          religion: "Any",
-          caste: "Any",
-          education: "Bachelor's Degree",
-          occupation: "Any",
+          religion: "",
+          caste: "",
+          education: "",
+          occupation: "",
         },
         propertyDetails: {},
         photos: [],
@@ -668,19 +649,16 @@ exports.getSavedProfiles = async (req, res) => {
   }
 };
 
-// ==================== DELETE OWN PROFILE ====================
-// Delete own profile (user) - PERMANENTLY DELETES ACCOUNT AND PROFILE
+// Delete own profile
 exports.deleteOwnProfile = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Find the profile
     const profile = await Profile.findOne({ userId });
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
     }
 
-    // Delete profile photos from Cloudinary if they exist
     if (profile.photos && profile.photos.length > 0) {
       for (const photo of profile.photos) {
         if (photo.publicId && photo.publicId.startsWith("shubha-mangalam/")) {
@@ -693,10 +671,8 @@ exports.deleteOwnProfile = async (req, res) => {
       }
     }
 
-    // Delete profile image from Cloudinary
     if (profile.profileImage) {
       try {
-        // Extract public ID from URL
         const publicId = profile.profileImage.split("/").pop().split(".")[0];
         if (publicId) {
           await cloudinary.uploader.destroy(
@@ -708,13 +684,8 @@ exports.deleteOwnProfile = async (req, res) => {
       }
     }
 
-    // Delete the profile
     await Profile.findOneAndDelete({ userId });
-
-    // Delete the user account
     await User.findByIdAndDelete(userId);
-
-    console.log(`✅ User ${userId} and their profile permanently deleted`);
 
     res.status(200).json({
       success: true,
@@ -730,115 +701,7 @@ exports.deleteOwnProfile = async (req, res) => {
   }
 };
 
-// ==================== VISIBILITY FUNCTIONS ====================
-
-// Toggle profile visibility (user)
-exports.toggleVisibility = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    console.log(`🔍 Toggling visibility for user: ${userId}`);
-
-    const profile = await Profile.findOne({ userId });
-
-    if (!profile) {
-      console.log(`❌ Profile not found for user: ${userId}`);
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
-
-    // Toggle isPublic status
-    const currentStatus = profile.isPublic;
-    profile.isPublic = !currentStatus;
-
-    // FORCE SAVE
-    await profile.save();
-
-    console.log(`✅ Profile visibility toggled for user ${userId}:`);
-    console.log(`   - Before: ${currentStatus}`);
-    console.log(`   - After: ${profile.isPublic}`);
-
-    res.status(200).json({
-      success: true,
-      message: profile.isPublic
-        ? "Profile is now visible"
-        : "Profile is now hidden",
-      isPublic: profile.isPublic,
-    });
-  } catch (error) {
-    console.error("Toggle visibility error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to toggle visibility",
-      error: error.message,
-    });
-  }
-};
-
-// Force hide profile (for debugging)
-exports.forceToggleVisibility = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    console.log(`🔍 Force hiding profile for user: ${userId}`);
-
-    const profile = await Profile.findOne({ userId });
-
-    if (!profile) {
-      console.log(`❌ Profile not found for user: ${userId}`);
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found",
-      });
-    }
-
-    // Force set isPublic to false
-    profile.isPublic = false;
-    await profile.save();
-
-    console.log(`✅ Profile FORCE SET to HIDDEN for user ${userId}`);
-    console.log(`   - isPublic: ${profile.isPublic}`);
-
-    res.status(200).json({
-      success: true,
-      message: "Profile forcefully hidden",
-      isPublic: profile.isPublic,
-    });
-  } catch (error) {
-    console.error("Force hide error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to force hide profile",
-      error: error.message,
-    });
-  }
-};
-
-// Delete own profile (user)
-exports.deleteOwnProfile = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    const profile = await Profile.findOne({ userId });
-    if (!profile) {
-      return res.status(404).json({ message: "Profile not found" });
-    }
-
-    await Profile.findOneAndDelete({ userId });
-    await User.findByIdAndDelete(userId);
-
-    res.status(200).json({
-      message: "Profile and account deleted successfully",
-    });
-  } catch (error) {
-    console.error("Delete own profile error:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to delete profile", error: error.message });
-  }
-};
-
-// Admin delete profile from search (profile only, keep user account)
+// Admin delete profile
 exports.adminDeleteProfile = async (req, res) => {
   try {
     const { id } = req.params;
@@ -849,7 +712,6 @@ exports.adminDeleteProfile = async (req, res) => {
     }
 
     await Profile.findByIdAndDelete(id);
-
     await User.findByIdAndUpdate(profile.userId, {
       isProfileComplete: false,
       profileCompletionPercentage: 0,
@@ -866,13 +728,12 @@ exports.adminDeleteProfile = async (req, res) => {
   }
 };
 
-// Track profile view - increments view count
+// Track profile view
 exports.trackProfileView = async (req, res) => {
   try {
     const { profileId } = req.params;
     const viewerId = req.user.id;
 
-    // Find the profile
     const profile = await Profile.findById(profileId);
     if (!profile) {
       return res.status(404).json({
@@ -881,7 +742,6 @@ exports.trackProfileView = async (req, res) => {
       });
     }
 
-    // Don't count if user views their own profile
     if (profile.userId.toString() === viewerId) {
       return res.status(200).json({
         success: true,
@@ -890,11 +750,8 @@ exports.trackProfileView = async (req, res) => {
       });
     }
 
-    // Check if this user already viewed this profile in the last 24 hours
-    // This prevents spam views from the same user
     const lastViewIndex = profile.statistics?.viewedBy?.indexOf(viewerId);
     if (lastViewIndex !== -1 && lastViewIndex !== undefined) {
-      // User already viewed, don't increment again
       return res.status(200).json({
         success: true,
         message: "Already viewed recently",
@@ -902,7 +759,6 @@ exports.trackProfileView = async (req, res) => {
       });
     }
 
-    // Increment view count
     if (!profile.statistics) {
       profile.statistics = {};
     }
