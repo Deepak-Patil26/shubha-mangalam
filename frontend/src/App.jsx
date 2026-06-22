@@ -2204,15 +2204,21 @@ const ViewProfilePage = () => {
   const [viewCount, setViewCount] = useState(0);
   const [showInterestPopup, setShowInterestPopup] = useState(false);
   const [isSendingInterest, setIsSendingInterest] = useState(false);
+  const [isRequestingCallback, setIsRequestingCallback] = useState(false);
   const autoPlayRef = useRef(null);
   const viewTrackedRef = useRef(false);
+
+  // Callback form state
+  const [callbackForm, setCallbackForm] = useState({
+    name: "",
+    phoneNumber: "",
+  });
 
   // Load profile and track view
   useEffect(() => {
     if (id) {
       loadProfile();
       checkIfSaved();
-      // Track view when profile loads (only once)
       if (!viewTrackedRef.current) {
         trackProfileView();
         viewTrackedRef.current = true;
@@ -2250,7 +2256,6 @@ const ViewProfilePage = () => {
       setProfile(response.data);
       setIsOwner(response.data.isOwner || false);
 
-      // Set view count from profile data
       if (response.data.profile?.statistics?.profileViews !== undefined) {
         setViewCount(response.data.profile.statistics.profileViews);
       }
@@ -2271,8 +2276,6 @@ const ViewProfilePage = () => {
       );
       if (response.data && response.data.viewCount !== undefined) {
         setViewCount(response.data.viewCount);
-
-        // Update the profile object with new view count
         setProfile((prev) => {
           if (prev) {
             return {
@@ -2308,9 +2311,11 @@ const ViewProfilePage = () => {
     }
   };
 
+  // ============ SEND INTEREST WITH CALLBACK ============
   const handleSendInterest = async () => {
     setIsSendingInterest(true);
     try {
+      // First, send the interest
       await axios.post(
         `${API_URL}/interests/send`,
         {
@@ -2320,13 +2325,60 @@ const ViewProfilePage = () => {
         getHeaders(),
       );
 
-      // Show the interest popup immediately after successful interest send
-      setShowInterestPopup(true);
       toast.success("Interest sent successfully!");
+
+      // Show the interest popup
+      setShowInterestPopup(true);
+
+      // Pre-fill callback form with user data
+      const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+      setCallbackForm({
+        name: userData?.fullName || "",
+        phoneNumber: userData?.mobileNumber || "",
+      });
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to send interest");
     } finally {
       setIsSendingInterest(false);
+    }
+  };
+
+  // ============ HANDLE CALLBACK REQUEST ============
+  const handleCallbackRequest = async () => {
+    // Validate form
+    if (!callbackForm.name.trim()) {
+      toast.error("Please enter your name");
+      return;
+    }
+    if (!callbackForm.phoneNumber.trim()) {
+      toast.error("Please enter your phone number");
+      return;
+    }
+
+    setIsRequestingCallback(true);
+    try {
+      // Send callback request to backend
+      await axios.post(
+        `${API_URL}/callbacks/request`,
+        {
+          profileId: id,
+          name: callbackForm.name,
+          phoneNumber: callbackForm.phoneNumber,
+          message: `Callback requested for profile ${name} (Profile ID: ${id})`,
+        },
+        getHeaders(),
+      );
+
+      toast.success("Callback request sent! Broker will contact you soon.");
+      setShowInterestPopup(false);
+      setCallbackForm({ name: "", phoneNumber: "" });
+    } catch (error) {
+      console.error("Callback request error:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to request callback",
+      );
+    } finally {
+      setIsRequestingCallback(false);
     }
   };
 
@@ -2520,7 +2572,7 @@ const ViewProfilePage = () => {
               </div>
             </div>
 
-            {/* Profile Details */}
+            {/* Profile Details - Same as before */}
             <div className="lg:col-span-2 space-y-6">
               {/* Personal Details */}
               <div className="bg-white rounded-2xl shadow-premium p-6">
@@ -2937,10 +2989,10 @@ const ViewProfilePage = () => {
         </div>
       )}
 
-      {/* ===== INTEREST POPUP MODAL ===== */}
+      {/* ===== INTEREST POPUP MODAL WITH CALLBACK REQUEST ===== */}
       {showInterestPopup && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[999] flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl transform transition-all duration-500 scale-100 animate-slide-up">
+          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl transform transition-all duration-500 scale-100 animate-slide-up max-h-[90vh] overflow-y-auto">
             {/* Close button */}
             <button
               onClick={() => setShowInterestPopup(false)}
@@ -2958,7 +3010,7 @@ const ViewProfilePage = () => {
 
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold text-text-dark mb-2">
-                Interest Sent! ❤️
+                Interest Sent!
               </h3>
               <p className="text-text-light text-sm">
                 Your interest has been sent to{" "}
@@ -2969,7 +3021,7 @@ const ViewProfilePage = () => {
 
             <div className="border-t border-gray-100 pt-6">
               <p className="text-sm text-text-light text-center mb-4">
-                Contact the broker to discuss this profile:
+                How would you like to proceed?
               </p>
               <div className="flex flex-col gap-3">
                 {/* Call Broker Button */}
@@ -2978,7 +3030,7 @@ const ViewProfilePage = () => {
                   className="flex items-center justify-center gap-3 px-6 py-4 bg-primary-maroon text-white rounded-xl hover:bg-[#600018] transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
                 >
                   <FaPhone className="text-lg" />
-                  <span className="font-medium">Call Broker</span>
+                  <span className="font-medium">Call Broker Now</span>
                 </a>
 
                 {/* WhatsApp Broker Button */}
@@ -2993,6 +3045,61 @@ const ViewProfilePage = () => {
                   <FaWhatsapp className="text-lg" />
                   <span className="font-medium">Chat on WhatsApp</span>
                 </a>
+
+                {/* ===== CALLBACK REQUEST SECTION ===== */}
+                <div className="relative">
+                  <div className="relative flex items-center py-2">
+                    <div className="flex-grow border-t border-gray-200"></div>
+                    <span className="flex-shrink mx-4 text-xs text-text-light">
+                      or
+                    </span>
+                    <div className="flex-grow border-t border-gray-200"></div>
+                  </div>
+                  <p className="text-xs text-text-light text-center mb-3">
+                    Request a callback from the broker
+                  </p>
+
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      placeholder="Your Name *"
+                      value={callbackForm.name}
+                      onChange={(e) =>
+                        setCallbackForm({
+                          ...callbackForm,
+                          name: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-maroon outline-none transition-colors text-sm"
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Your Phone Number *"
+                      value={callbackForm.phoneNumber}
+                      onChange={(e) =>
+                        setCallbackForm({
+                          ...callbackForm,
+                          phoneNumber: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-maroon outline-none transition-colors text-sm"
+                    />
+                    <button
+                      onClick={handleCallbackRequest}
+                      disabled={isRequestingCallback}
+                      className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary-gold text-white rounded-xl hover:bg-amber-500 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isRequestingCallback ? (
+                        <FaSpinner className="animate-spin" />
+                      ) : (
+                        <>
+                          <FaPhone className="text-sm" />
+                          <span>Request Callback</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
 
                 {/* Continue Browsing Button */}
                 <button

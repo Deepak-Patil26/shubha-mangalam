@@ -18,6 +18,7 @@ const adminRoutes = require("./src/routes/admin.routes");
 const translationRoutes = require("./src/routes/translation.routes");
 const uploadRoutes = require("./src/routes/upload.routes");
 const publicRoutes = require("./src/routes/public.routes");
+const callbackRoutes = require("./src/routes/callback.routes");
 
 // Import middleware
 const { errorHandler } = require("./src/middleware/error.middleware");
@@ -83,6 +84,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/translate", translationRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/public", publicRoutes);
+app.use("/api/callbacks", callbackRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
