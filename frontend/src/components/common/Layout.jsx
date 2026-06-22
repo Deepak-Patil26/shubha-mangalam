@@ -17,6 +17,7 @@ import {
   FaMapMarkerAlt,
   FaArrowRight,
   FaRegSmile,
+  FaInstagram,
 } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
 
@@ -389,7 +390,7 @@ const Layout = ({ children }) => {
 
         <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
-            {/* Brand Column */}
+            {/* Brand Column with Instagram */}
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary-gold to-amber-500 flex items-center justify-center shadow-lg shadow-primary-gold/20">
@@ -412,6 +413,22 @@ const Layout = ({ children }) => {
                 India's premier matrimonial platform connecting families with
                 trust, tradition, and technology. Where love stories begin.
               </p>
+
+              {/* Instagram Link */}
+              <div className="flex items-center gap-3 mt-4">
+                <a
+                  href="https://www.instagram.com/shubhamangalam/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-300 hover:scale-105"
+                  aria-label="Follow us on Instagram"
+                >
+                  <FaInstagram className="text-lg" />
+                  <span className="text-sm font-medium">
+                    Follow @shubhamangalam
+                  </span>
+                </a>
+              </div>
             </div>
 
             {/* Quick Links */}
