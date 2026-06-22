@@ -25,21 +25,9 @@ import {
   FaGraduationCap,
   FaBriefcase,
   FaVenusMars,
-  FaCrown,
-  FaGem,
-  FaFire,
-  FaCompass,
-  FaInfinity,
 } from "react-icons/fa";
-import { HiSparkles, HiOutlineSparkles, HiLightBulb } from "react-icons/hi";
-import {
-  MdVerified,
-  MdOutlineSecurity,
-  MdOutlineStars,
-  MdOutlineAutoAwesome,
-} from "react-icons/md";
-import { FiAward, FiGlobe } from "react-icons/fi";
-import { BsFillSuitHeartFill, BsStars } from "react-icons/bs";
+import { HiSparkles, HiOutlineSparkles } from "react-icons/hi";
+import { MdVerified, MdOutlineSecurity } from "react-icons/md";
 import Layout from "../../components/common/Layout";
 import {
   motion,
@@ -284,7 +272,7 @@ const HomePage = () => {
     return cards;
   };
 
-  // ============ CINEMATIC FEATURES DATA ============
+  // ============ FEATURES DATA ============
   const features = [
     {
       icon: FaHandshake,
@@ -329,9 +317,9 @@ const HomePage = () => {
       <Layout>
         <div className="min-h-screen flex items-center justify-center bg-black">
           <div className="relative">
-            <div className="w-20 h-20 border-4 border-primary-gold border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-16 h-16 md:w-20 md:h-20 border-4 border-primary-gold border-t-transparent rounded-full animate-spin"></div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary-gold to-amber-500 rounded-full animate-pulse"></div>
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-primary-gold to-amber-500 rounded-full animate-pulse"></div>
             </div>
           </div>
         </div>
@@ -343,30 +331,30 @@ const HomePage = () => {
 
   return (
     <Layout>
-      {/* ============ CINEMATIC HERO SECTION ============ */}
+      {/* ============ HERO SECTION - MOBILE FIXED ============ */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden w-full"
       >
-        {/* Animated Background with Rich Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0000] via-[#1a0505] to-[#2d0a0a]">
-          {/* Animated Gradient Orbs */}
+        {/* Animated Background - MOBILE RESPONSIVE */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0000] via-[#1a0505] to-[#2d0a0a] overflow-hidden">
+          {/* Smaller orbs on mobile */}
           <motion.div
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.3, 0.5, 0.3],
-              x: [0, 100, 0],
-              y: [0, -100, 0],
+              x: [0, 50, 0],
+              y: [0, -50, 0],
             }}
             transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-r from-primary-maroon/20 via-primary-gold/10 to-transparent rounded-full blur-3xl"
+            className="absolute top-1/4 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-gradient-to-r from-primary-maroon/20 via-primary-gold/10 to-transparent rounded-full blur-3xl"
           />
           <motion.div
             animate={{
               scale: [1, 1.3, 1],
               opacity: [0.2, 0.4, 0.2],
-              x: [0, -100, 0],
-              y: [0, 100, 0],
+              x: [0, -50, 0],
+              y: [0, 50, 0],
             }}
             transition={{
               duration: 20,
@@ -374,21 +362,13 @@ const HomePage = () => {
               ease: "easeInOut",
               delay: 2,
             }}
-            className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-to-l from-primary-gold/20 via-amber-500/10 to-transparent rounded-full blur-3xl"
-          />
-          <motion.div
-            animate={{
-              scale: [1, 1.1, 1],
-              opacity: [0.1, 0.3, 0.1],
-            }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-primary-maroon/5 via-primary-gold/5 to-transparent rounded-full blur-3xl"
+            className="absolute bottom-1/4 right-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-gradient-to-l from-primary-gold/20 via-amber-500/10 to-transparent rounded-full blur-3xl"
           />
         </div>
 
-        {/* Cinematic Particle System */}
-        <div className="absolute inset-0">
-          {[...Array(80)].map((_, i) => (
+        {/* Particle System - Reduced on mobile */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(40)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute w-1 h-1 rounded-full"
@@ -401,38 +381,19 @@ const HomePage = () => {
                 opacity: Math.random() * 0.5 + 0.1,
               }}
               animate={{
-                y: [0, -Math.random() * 200 - 50, 0],
-                x: [0, (Math.random() - 0.5) * 100, 0],
+                y: [0, -Math.random() * 100 - 30, 0],
+                x: [0, (Math.random() - 0.5) * 50, 0],
                 opacity: [0, Math.random() * 0.5 + 0.2, 0],
                 scale: [0, 1, 0],
               }}
               transition={{
-                duration: Math.random() * 8 + 5,
+                duration: Math.random() * 6 + 4,
                 repeat: Infinity,
                 delay: Math.random() * 5,
                 ease: "easeInOut",
               }}
             />
           ))}
-        </div>
-
-        {/* Cinematic Light Rays */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%]"
-          >
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute top-1/2 left-1/2 w-[1px] h-[120%] bg-gradient-to-b from-transparent via-primary-gold/5 to-transparent"
-                style={{
-                  transform: `translate(-50%, -50%) rotate(${i * 30}deg)`,
-                }}
-              />
-            ))}
-          </motion.div>
         </div>
 
         {/* Hero Content */}
@@ -443,7 +404,7 @@ const HomePage = () => {
             transition={{ duration: 1, delay: 0.2 }}
             className="max-w-5xl mx-auto text-center"
           >
-            {/* Cinematic Badge */}
+            {/* Badge */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -453,25 +414,25 @@ const HomePage = () => {
                 type: "spring",
                 stiffness: 200,
               }}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-primary-gold/20 via-primary-maroon/20 to-primary-gold/20 backdrop-blur-xl border border-primary-gold/30 mb-8 shadow-lg shadow-primary-gold/10"
+              className="inline-flex items-center gap-2 px-4 py-1.5 md:px-6 md:py-2.5 rounded-full bg-gradient-to-r from-primary-gold/20 via-primary-maroon/20 to-primary-gold/20 backdrop-blur-xl border border-primary-gold/30 mb-6 md:mb-8 shadow-lg shadow-primary-gold/10"
             >
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
               >
-                <HiSparkles className="text-primary-gold text-sm" />
+                <HiSparkles className="text-primary-gold text-xs md:text-sm" />
               </motion.div>
-              <span className="text-sm font-medium text-primary-gold tracking-wider">
-                #1 Premium Matrimony Platform
+              <span className="text-xs md:text-sm font-medium text-primary-gold tracking-wider">
+                #1 Premium Matrimony
               </span>
             </motion.div>
 
-            {/* Main Heading with Cinematic Gradient */}
+            {/* Main Heading */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6"
+              className="text-3xl md:text-5xl lg:text-7xl xl:text-8xl font-bold leading-tight mb-4 md:mb-6"
             >
               <span className="relative">
                 <motion.span
@@ -483,37 +444,32 @@ const HomePage = () => {
                 >
                   Find Your Soulmate
                 </motion.span>
-                <motion.div
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="absolute -inset-4 -z-10 bg-gradient-to-r from-primary-gold/10 via-amber-500/5 to-primary-gold/10 blur-3xl"
-                />
               </span>
-              <span className="block text-4xl md:text-5xl lg:text-6xl mt-2 text-white/80 font-light tracking-wide">
+              <span className="block text-2xl md:text-4xl lg:text-5xl xl:text-6xl mt-1 md:mt-2 text-white/80 font-light tracking-wide">
                 With Shubha Mangalam
               </span>
             </motion.h1>
 
-            {/* Cinematic Divider */}
+            {/* Divider */}
             <motion.div
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 1, delay: 0.8 }}
-              className="w-32 h-0.5 bg-gradient-to-r from-transparent via-primary-gold to-transparent mx-auto my-6"
+              className="w-20 md:w-32 h-0.5 bg-gradient-to-r from-transparent via-primary-gold to-transparent mx-auto my-4 md:my-6"
             />
 
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="text-xl md:text-2xl text-white/50 max-w-3xl mx-auto mb-10 leading-relaxed"
+              className="text-base md:text-xl lg:text-2xl text-white/50 max-w-3xl mx-auto mb-6 md:mb-10 leading-relaxed px-2"
             >
               India's premier matrimonial platform connecting families with
               trust, tradition, and technology.
               <motion.span
                 animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="block text-primary-gold mt-2 font-light"
+                className="block text-primary-gold mt-1 md:mt-2 font-light text-sm md:text-base"
               >
                 Where love stories begin.
               </motion.span>
@@ -524,7 +480,7 @@ const HomePage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1 }}
-              className="flex flex-col sm:flex-row justify-center gap-4 mb-12"
+              className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mb-8 md:mb-12"
             >
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -532,10 +488,10 @@ const HomePage = () => {
               >
                 <Link
                   to={isAuthenticated ? "/search" : "/register"}
-                  className="group relative px-10 py-4 bg-gradient-to-r from-primary-gold via-amber-500 to-primary-gold text-white rounded-2xl font-semibold text-lg overflow-hidden shadow-xl shadow-primary-gold/20"
+                  className="group relative px-6 md:px-10 py-3 md:py-4 bg-gradient-to-r from-primary-gold via-amber-500 to-primary-gold text-white rounded-2xl font-semibold text-sm md:text-lg overflow-hidden shadow-xl shadow-primary-gold/20 w-full sm:w-auto block text-center"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-primary-gold via-yellow-400 to-primary-gold opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
-                  <span className="relative z-10 flex items-center gap-2">
+                  <span className="relative z-10 flex items-center justify-center gap-2">
                     Get Started
                     <motion.span
                       animate={{ x: [0, 5, 0] }}
@@ -556,7 +512,7 @@ const HomePage = () => {
               >
                 <Link
                   to="/broker-office"
-                  className="px-10 py-4 bg-white/5 backdrop-blur-xl text-white rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-white/5"
+                  className="px-6 md:px-10 py-3 md:py-4 bg-white/5 backdrop-blur-xl text-white rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-white/5 w-full sm:w-auto"
                 >
                   <FaBuilding />
                   <span>Broker Office</span>
@@ -564,7 +520,7 @@ const HomePage = () => {
               </motion.div>
             </motion.div>
 
-            {/* Cinematic Search Bar */}
+            {/* Search Bar - Mobile Responsive */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -572,77 +528,55 @@ const HomePage = () => {
               className="max-w-2xl mx-auto"
             >
               <div className="relative group">
-                <motion.div
-                  animate={{
-                    scale: [1, 1.02, 1],
-                    opacity: [0.5, 0.8, 0.5],
-                  }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="absolute -inset-1 bg-gradient-to-r from-primary-gold/20 via-amber-500/20 to-primary-gold/20 rounded-2xl blur-xl"
-                />
-                <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl p-2 border border-white/10 shadow-2xl shadow-black/20">
-                  <div className="flex items-center gap-2">
-                    <motion.div
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <FaSearch className="text-primary-gold/60 ml-3" />
-                    </motion.div>
+                <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl p-1.5 md:p-2 border border-white/10 shadow-2xl shadow-black/20">
+                  <div className="flex items-center gap-1 md:gap-2">
+                    <FaSearch className="text-primary-gold/60 ml-2 md:ml-3 text-sm md:text-base" />
                     <input
                       type="text"
-                      placeholder="Search by name, location, religion..."
-                      className="flex-1 bg-transparent text-white placeholder-white/30 py-3 px-2 outline-none"
+                      placeholder="Search by name, location..."
+                      className="flex-1 bg-transparent text-white placeholder-white/30 py-2 md:py-3 px-1 md:px-2 outline-none text-sm md:text-base min-w-0"
                     />
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    <Link
+                      to="/search"
+                      className="px-4 md:px-6 py-1.5 md:py-2 bg-gradient-to-r from-primary-gold to-amber-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-primary-gold/20 transition-all duration-300 flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap"
                     >
-                      <Link
-                        to="/search"
-                        className="px-6 py-2 bg-gradient-to-r from-primary-gold to-amber-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-primary-gold/20 transition-all duration-300 flex items-center gap-2"
-                      >
-                        <FaSearch className="text-sm" />
-                        <span>Search</span>
-                      </Link>
-                    </motion.div>
+                      <FaSearch className="text-xs md:text-sm" />
+                      <span className="hidden xs:inline">Search</span>
+                    </Link>
                   </div>
                 </div>
               </div>
             </motion.div>
 
-            {/* Cinematic Stats */}
+            {/* Stats - Mobile Responsive */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 1.4 }}
-              className="flex flex-wrap justify-center gap-8 mt-12"
+              className="flex flex-wrap justify-center gap-4 md:gap-8 mt-8 md:mt-12"
             >
               {[
                 {
                   icon: FaUsers,
-                  label: "Total Members",
+                  label: "Members",
                   value: membersCount.toLocaleString(),
                   gradient: "from-blue-400 to-cyan-400",
                 },
                 {
                   icon: FaHeart,
-                  label: "Interests Sent",
+                  label: "Interests",
                   value: interestsCount.toLocaleString(),
                   gradient: "from-rose-400 to-pink-400",
                 },
                 {
                   icon: MdVerified,
-                  label: "Verified Profiles",
+                  label: "Verified",
                   value: profilesCount.toLocaleString(),
                   gradient: "from-emerald-400 to-green-400",
                 },
                 {
                   icon: FaRegSmile,
-                  label: "Success Stories",
+                  label: "Stories",
                   value: storiesCount.toLocaleString(),
                   gradient: "from-amber-400 to-orange-400",
                 },
@@ -652,30 +586,21 @@ const HomePage = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 1.6 + index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className="flex items-center gap-3 text-white/70 hover:text-white/90 transition-all group cursor-default"
+                  whileHover={{ scale: 1.05 }}
+                  className="flex items-center gap-2 md:gap-3 text-white/70 hover:text-white/90 transition-all group cursor-default"
                 >
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: index * 0.5,
-                    }}
-                    className={`bg-gradient-to-r ${stat.gradient} p-2 rounded-lg`}
+                  <div
+                    className={`bg-gradient-to-r ${stat.gradient} p-1.5 md:p-2 rounded-lg`}
                   >
-                    <stat.icon className="text-white text-lg" />
-                  </motion.div>
-                  <div>
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.8 + index * 0.1 }}
-                      className="font-semibold text-2xl md:text-3xl bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent"
-                    >
+                    <stat.icon className="text-white text-sm md:text-lg" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-lg md:text-2xl lg:text-3xl bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
                       {stat.value}
-                    </motion.div>
-                    <div className="text-xs text-white/40">{stat.label}</div>
+                    </div>
+                    <div className="text-[10px] md:text-xs text-white/40">
+                      {stat.label}
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -683,13 +608,13 @@ const HomePage = () => {
           </motion.div>
         </div>
 
-        {/* Cinematic Scroll Indicator */}
+        {/* Scroll Indicator */}
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/30"
+          className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 text-white/30"
         >
-          <div className="w-6 h-10 rounded-full border-2 border-white/20 flex justify-center">
+          <div className="w-5 h-8 md:w-6 md:h-10 rounded-full border-2 border-white/20 flex justify-center">
             <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
@@ -699,32 +624,10 @@ const HomePage = () => {
         </motion.div>
       </section>
 
-      {/* ============ CINEMATIC 3D CARD STACK SECTION ============ */}
-      <section className="py-32 bg-gradient-to-b from-black via-[#0a0505] to-black relative overflow-hidden">
-        {/* Cinematic Background Effects */}
-        <div className="absolute inset-0">
+      {/* ============ CINEMATIC 3D CARD STACK SECTION - MOBILE FIXED ============ */}
+      <section className="py-16 md:py-32 bg-gradient-to-b from-black via-[#0a0505] to-black relative overflow-hidden w-full">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary-maroon/10 via-transparent to-transparent"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.05)_0%,_transparent_70%)]"></div>
-          {[...Array(30)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-primary-gold/20 rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                y: [0, -80, 0],
-                opacity: [0, 0.5, 0],
-                scale: [0, 1, 0],
-              }}
-              transition={{
-                duration: Math.random() * 6 + 4,
-                repeat: Infinity,
-                delay: Math.random() * 4,
-              }}
-            />
-          ))}
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
@@ -733,9 +636,9 @@ const HomePage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-10 md:mb-16"
           >
-            <span className="inline-block text-primary-gold font-semibold tracking-wider text-sm mb-4">
+            <span className="inline-block text-primary-gold font-semibold tracking-wider text-xs md:text-sm mb-3 md:mb-4">
               MEET OUR MEMBERS
             </span>
             <motion.h2
@@ -743,11 +646,11 @@ const HomePage = () => {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="text-4xl md:text-6xl font-bold text-white mb-6"
+              className="text-2xl md:text-4xl lg:text-6xl font-bold text-white mb-3 md:mb-6"
             >
               Recent <span className="text-primary-gold">Profiles</span>
             </motion.h2>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            <p className="text-white/50 text-sm md:text-lg max-w-2xl mx-auto px-2">
               {profiles.length > 0
                 ? `${profiles.length} verified profiles looking for their perfect match`
                 : "Be the first to join and find your perfect match"}
@@ -758,13 +661,13 @@ const HomePage = () => {
           <div className="relative max-w-4xl mx-auto">
             {profiles.length > 0 ? (
               <>
-                <div className="relative flex justify-center items-center min-h-[550px] perspective-1200">
+                <div className="relative flex justify-center items-center min-h-[400px] md:min-h-[550px] perspective-1200">
                   {cinematicCards.map((profile, index) => {
                     const isFront = index === cinematicCards.length - 1;
                     const position = profile.position || 4;
 
-                    const offsetX = position * 20;
-                    const offsetY = position * 15;
+                    const offsetX = position * 15;
+                    const offsetY = position * 10;
                     const scale = 1 - position * 0.06;
                     const opacity = 1 - position * 0.2;
                     const rotateY = position * 5;
@@ -813,8 +716,8 @@ const HomePage = () => {
                         whileHover={
                           isFront
                             ? {
-                                scale: 1.03,
-                                y: -8,
+                                scale: 1.02,
+                                y: -5,
                                 transition: { duration: 0.3 },
                               }
                             : {}
@@ -823,12 +726,12 @@ const HomePage = () => {
                         onClick={() => handleProfileClick(profile._id)}
                         style={{
                           width: "100%",
-                          maxWidth: "400px",
+                          maxWidth: "340px",
                           transformStyle: "preserve-3d",
                         }}
                       >
                         <div
-                          className={`bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-xl rounded-3xl border ${
+                          className={`bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-xl rounded-2xl md:rounded-3xl border ${
                             isFront
                               ? "border-primary-gold/50 shadow-2xl shadow-primary-gold/30"
                               : "border-white/10 shadow-xl"
@@ -846,92 +749,90 @@ const HomePage = () => {
                               <img
                                 src={profileImage}
                                 alt={name}
-                                className={`w-full ${isFront ? "h-80" : "h-64"} object-cover transition-all duration-700`}
+                                className={`w-full ${isFront ? "h-56 md:h-80" : "h-44 md:h-64"} object-cover transition-all duration-700`}
                               />
                             ) : (
                               <div
-                                className={`w-full ${isFront ? "h-80" : "h-64"} bg-gradient-to-br from-primary-maroon to-primary-gold flex items-center justify-center text-white ${isFront ? "text-8xl" : "text-6xl"} font-bold`}
+                                className={`w-full ${isFront ? "h-56 md:h-80" : "h-44 md:h-64"} bg-gradient-to-br from-primary-maroon to-primary-gold flex items-center justify-center text-white ${isFront ? "text-6xl md:text-8xl" : "text-4xl md:text-6xl"} font-bold`}
                               >
                                 {name.charAt(0).toUpperCase()}
                               </div>
                             )}
 
                             {isFront && (
-                              <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
-                            )}
-
-                            {isFront && (
                               <motion.div
                                 animate={{ scale: [1, 1.1, 1] }}
                                 transition={{ duration: 2, repeat: Infinity }}
-                                className="absolute top-4 right-4 bg-gradient-to-r from-primary-gold to-amber-500 text-black text-xs font-bold px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1"
+                                className="absolute top-2 md:top-4 right-2 md:right-4 bg-gradient-to-r from-primary-gold to-amber-500 text-black text-[10px] md:text-xs font-bold px-2 md:px-4 py-1 md:py-1.5 rounded-full shadow-lg flex items-center gap-1"
                               >
-                                <HiSparkles className="text-sm" />
+                                <HiSparkles className="text-xs md:text-sm" />
                                 Featured
                               </motion.div>
                             )}
 
                             <div
-                              className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-${isFront ? "6" : "4"}`}
+                              className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 md:p-${isFront ? "6" : "4"}`}
                             >
                               <h3
-                                className={`text-white ${isFront ? "text-2xl" : "text-xl"} font-bold`}
+                                className={`text-white ${isFront ? "text-lg md:text-2xl" : "text-base md:text-xl"} font-bold`}
                               >
                                 {name}
                                 {isFront && (
-                                  <span className="ml-2 text-primary-gold text-sm font-normal">
+                                  <span className="ml-2 text-primary-gold text-xs md:text-sm font-normal">
                                     ✦
                                   </span>
                                 )}
                               </h3>
                               <div
-                                className={`flex flex-wrap gap-${isFront ? "3" : "2"} mt-1 text-white/80 text-sm`}
+                                className={`flex flex-wrap gap-1 md:gap-${isFront ? "3" : "2"} mt-0.5 md:mt-1 text-white/80 text-[10px] md:text-sm`}
                               >
-                                <span className="flex items-center gap-1">
-                                  <FaCalendar className="text-primary-gold" />
+                                <span className="flex items-center gap-0.5 md:gap-1">
+                                  <FaCalendar className="text-primary-gold text-[8px] md:text-xs" />
                                   {age} yrs
                                 </span>
-                                <span className="flex items-center gap-1">
-                                  <FaVenusMars className="text-primary-gold" />
+                                <span className="flex items-center gap-0.5 md:gap-1">
+                                  <FaVenusMars className="text-primary-gold text-[8px] md:text-xs" />
                                   {gender || "N/A"}
                                 </span>
-                                <span className="flex items-center gap-1">
-                                  <FaMapMarkerAlt className="text-primary-gold" />
+                                <span className="flex items-center gap-0.5 md:gap-1">
+                                  <FaMapMarkerAlt className="text-primary-gold text-[8px] md:text-xs" />
                                   {city || state || "N/A"}
                                 </span>
                               </div>
                             </div>
                           </div>
 
-                          <div className={`p-${isFront ? "6" : "4"} space-y-2`}>
+                          <div
+                            className={`p-3 md:p-${isFront ? "6" : "4"} space-y-1 md:space-y-2`}
+                          >
                             {isFront ? (
                               <>
-                                <div className="grid grid-cols-2 gap-3 text-sm">
-                                  <div className="flex items-center gap-2 text-white/60 bg-white/5 rounded-xl px-3 py-2">
-                                    <FaGraduationCap className="text-primary-gold/60" />
-                                    <span className="truncate">
+                                <div className="grid grid-cols-2 gap-2 md:gap-3 text-xs md:text-sm">
+                                  <div className="flex items-center gap-1 md:gap-2 text-white/60 bg-white/5 rounded-xl px-2 md:px-3 py-1.5 md:py-2">
+                                    <FaGraduationCap className="text-primary-gold/60 text-xs md:text-sm" />
+                                    <span className="truncate text-[10px] md:text-sm">
                                       {education || "N/A"}
                                     </span>
                                   </div>
-                                  <div className="flex items-center gap-2 text-white/60 bg-white/5 rounded-xl px-3 py-2">
-                                    <FaBriefcase className="text-primary-gold/60" />
-                                    <span className="truncate">
+                                  <div className="flex items-center gap-1 md:gap-2 text-white/60 bg-white/5 rounded-xl px-2 md:px-3 py-1.5 md:py-2">
+                                    <FaBriefcase className="text-primary-gold/60 text-xs md:text-sm" />
+                                    <span className="truncate text-[10px] md:text-sm">
                                       {occupation || "N/A"}
                                     </span>
                                   </div>
                                 </div>
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                  <span className="px-3 py-1 bg-white/5 rounded-full text-xs text-white/40 border border-white/5">
+                                <div className="flex flex-wrap gap-1 md:gap-2 mt-1 md:mt-2">
+                                  <span className="px-2 md:px-3 py-0.5 md:py-1 bg-white/5 rounded-full text-[10px] md:text-xs text-white/40 border border-white/5">
                                     {pd.religion || "Any Religion"}
                                   </span>
-                                  <span className="px-3 py-1 bg-white/5 rounded-full text-xs text-white/40 border border-white/5">
+                                  <span className="px-2 md:px-3 py-0.5 md:py-1 bg-white/5 rounded-full text-[10px] md:text-xs text-white/40 border border-white/5">
                                     {pd.motherTongue || "Any Language"}
                                   </span>
                                 </div>
                                 <motion.button
                                   whileHover={{ scale: 1.02 }}
                                   whileTap={{ scale: 0.98 }}
-                                  className="w-full mt-3 py-3 bg-gradient-to-r from-primary-gold to-amber-500 text-black font-semibold rounded-xl text-sm hover:shadow-lg hover:shadow-primary-gold/30 transition-all duration-300"
+                                  className="w-full mt-2 md:mt-3 py-2 md:py-3 bg-gradient-to-r from-primary-gold to-amber-500 text-black font-semibold rounded-xl text-xs md:text-sm hover:shadow-lg hover:shadow-primary-gold/30 transition-all duration-300"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleProfileClick(profile._id);
@@ -942,13 +843,17 @@ const HomePage = () => {
                               </>
                             ) : (
                               <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-white/40 text-xs">
-                                  <FaGraduationCap className="text-primary-gold/40" />
-                                  <span>{education || "N/A"}</span>
+                                <div className="flex items-center gap-1 md:gap-2 text-white/40 text-[10px] md:text-xs">
+                                  <FaGraduationCap className="text-primary-gold/40 text-[8px] md:text-xs" />
+                                  <span className="truncate">
+                                    {education || "N/A"}
+                                  </span>
                                 </div>
-                                <div className="flex items-center gap-2 text-white/40 text-xs">
-                                  <FaBriefcase className="text-primary-gold/40" />
-                                  <span>{occupation || "N/A"}</span>
+                                <div className="flex items-center gap-1 md:gap-2 text-white/40 text-[10px] md:text-xs">
+                                  <FaBriefcase className="text-primary-gold/40 text-[8px] md:text-xs" />
+                                  <span className="truncate">
+                                    {occupation || "N/A"}
+                                  </span>
                                 </div>
                               </div>
                             )}
@@ -963,9 +868,9 @@ const HomePage = () => {
                   })}
                 </div>
 
-                {/* Cinematic Navigation Controls */}
+                {/* Navigation Controls */}
                 {profiles.length > 1 && (
-                  <div className="flex justify-center items-center gap-8 mt-10">
+                  <div className="flex justify-center items-center gap-4 md:gap-8 mt-6 md:mt-10">
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
@@ -982,10 +887,10 @@ const HomePage = () => {
                           );
                         }
                       }}
-                      className="p-4 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 group"
+                      className="p-2 md:p-4 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 group"
                     >
                       <svg
-                        className="w-6 h-6 text-white group-hover:text-primary-gold transition-colors"
+                        className="w-4 h-4 md:w-6 md:h-6 text-white group-hover:text-primary-gold transition-colors"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -999,7 +904,7 @@ const HomePage = () => {
                       </svg>
                     </motion.button>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3">
                       {profiles
                         .slice(0, Math.min(profiles.length, 6))
                         .map((_, index) => (
@@ -1018,8 +923,8 @@ const HomePage = () => {
                             }}
                             className={`h-1 rounded-full transition-all duration-500 ${
                               index === currentProfileIndex % profiles.length
-                                ? "bg-gradient-to-r from-primary-gold to-amber-500 w-10 shadow-lg shadow-primary-gold/50"
-                                : "bg-white/20 w-4 hover:bg-white/40"
+                                ? "bg-gradient-to-r from-primary-gold to-amber-500 w-6 md:w-10 shadow-lg shadow-primary-gold/50"
+                                : "bg-white/20 w-3 md:w-4 hover:bg-white/40"
                             }`}
                           />
                         ))}
@@ -1040,10 +945,10 @@ const HomePage = () => {
                           );
                         }
                       }}
-                      className="p-4 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 group"
+                      className="p-2 md:p-4 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 group"
                     >
                       <svg
-                        className="w-6 h-6 text-white group-hover:text-primary-gold transition-colors"
+                        className="w-4 h-4 md:w-6 md:h-6 text-white group-hover:text-primary-gold transition-colors"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1060,14 +965,14 @@ const HomePage = () => {
                 )}
 
                 {/* View All Profiles Button */}
-                <div className="text-center mt-8">
+                <div className="text-center mt-6 md:mt-8">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     <Link
                       to="/search"
-                      className="inline-flex items-center gap-3 px-8 py-3 border border-primary-gold/30 text-primary-gold rounded-xl hover:bg-primary-gold/10 transition-all duration-300 group"
+                      className="inline-flex items-center gap-2 md:gap-3 px-6 md:px-8 py-2 md:py-3 border border-primary-gold/30 text-primary-gold rounded-xl hover:bg-primary-gold/10 transition-all duration-300 group text-sm md:text-base"
                     >
                       <span>View All {profiles.length} Profiles</span>
                       <motion.span
@@ -1078,24 +983,24 @@ const HomePage = () => {
                           ease: "easeInOut",
                         }}
                       >
-                        <FaArrowRight className="text-sm" />
+                        <FaArrowRight className="text-xs md:text-sm" />
                       </motion.span>
                     </Link>
                   </motion.div>
                 </div>
               </>
             ) : (
-              <div className="text-center py-20">
-                <div className="text-6xl mb-4">💑</div>
-                <h3 className="text-2xl font-semibold text-white mb-2">
+              <div className="text-center py-16 md:py-20">
+                <div className="text-4xl md:text-6xl mb-4">💑</div>
+                <h3 className="text-xl md:text-2xl font-semibold text-white mb-2">
                   No Profiles Yet
                 </h3>
-                <p className="text-white/40 mb-6">
+                <p className="text-white/40 mb-4 md:mb-6 text-sm md:text-base px-4">
                   Be the first to join and find your perfect match!
                 </p>
                 <Link
                   to="/register"
-                  className="inline-block px-8 py-3 bg-gradient-to-r from-primary-gold to-amber-500 text-black rounded-xl font-semibold hover:shadow-lg hover:shadow-primary-gold/20 transition-all"
+                  className="inline-block px-6 md:px-8 py-2 md:py-3 bg-gradient-to-r from-primary-gold to-amber-500 text-black rounded-xl font-semibold hover:shadow-lg hover:shadow-primary-gold/20 transition-all text-sm md:text-base"
                 >
                   Join Now
                 </Link>
@@ -1105,9 +1010,9 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ============ CINEMATIC FEATURES SECTION ============ */}
-      <section className="py-32 bg-gradient-to-b from-black via-[#0a0505] to-black relative overflow-hidden">
-        <div className="absolute inset-0">
+      {/* ============ FEATURES SECTION - MOBILE FIXED ============ */}
+      <section className="py-16 md:py-32 bg-gradient-to-b from-black via-[#0a0505] to-black relative overflow-hidden w-full">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary-maroon/5 via-transparent to-transparent"></div>
         </div>
         <div className="container mx-auto px-4 relative z-10">
@@ -1116,20 +1021,20 @@ const HomePage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-20"
+            className="text-center mb-12 md:mb-20"
           >
-            <span className="inline-block text-primary-gold font-semibold tracking-wider text-sm mb-4">
+            <span className="inline-block text-primary-gold font-semibold tracking-wider text-xs md:text-sm mb-3 md:mb-4">
               FEATURES
             </span>
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            <h2 className="text-2xl md:text-4xl lg:text-6xl font-bold text-white mb-3 md:mb-6">
               Designed for <span className="text-primary-gold">Love</span>
             </h2>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            <p className="text-white/50 text-sm md:text-lg max-w-2xl mx-auto px-2">
               Every feature crafted to help you find your perfect match
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
@@ -1139,8 +1044,8 @@ const HomePage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  whileHover={{ y: -10 }}
-                  className="group relative bg-gradient-to-b from-white/5 to-white/0 backdrop-blur-sm rounded-3xl p-8 border border-white/5 hover:border-primary-gold/20 transition-all duration-500 overflow-hidden"
+                  whileHover={{ y: -5 }}
+                  className="group relative bg-gradient-to-b from-white/5 to-white/0 backdrop-blur-sm rounded-2xl md:rounded-3xl p-5 md:p-8 border border-white/5 hover:border-primary-gold/20 transition-all duration-500 overflow-hidden"
                 >
                   <div
                     className={`absolute -inset-1 bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-10 blur-2xl transition-opacity duration-500`}
@@ -1149,14 +1054,14 @@ const HomePage = () => {
                     <motion.div
                       whileHover={{ rotate: 360 }}
                       transition={{ duration: 0.6 }}
-                      className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${feature.iconGradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg ${feature.glow}`}
+                      className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-r ${feature.iconGradient} flex items-center justify-center mb-3 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg ${feature.glow}`}
                     >
-                      <Icon className="text-white text-2xl" />
+                      <Icon className="text-white text-xl md:text-2xl" />
                     </motion.div>
-                    <h3 className="text-xl font-semibold text-white mb-3">
+                    <h3 className="text-base md:text-xl font-semibold text-white mb-1 md:mb-3">
                       {feature.title}
                     </h3>
-                    <p className="text-white/50 leading-relaxed">
+                    <p className="text-white/50 text-xs md:text-sm leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
@@ -1167,24 +1072,24 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ============ CINEMATIC SUCCESS STORIES ============ */}
-      <section className="py-32 bg-gradient-to-b from-black via-[#0a0505] to-black relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-primary-maroon/5 via-transparent to-transparent"></div>
+      {/* ============ SUCCESS STORIES - MOBILE FIXED ============ */}
+      <section className="py-16 md:py-32 bg-gradient-to-b from-black via-[#0a0505] to-black relative overflow-hidden w-full">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-primary-maroon/5 via-transparent to-transparent overflow-hidden pointer-events-none"></div>
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-20"
+            className="text-center mb-12 md:mb-20"
           >
-            <span className="inline-block text-primary-gold font-semibold tracking-wider text-sm mb-4">
+            <span className="inline-block text-primary-gold font-semibold tracking-wider text-xs md:text-sm mb-3 md:mb-4">
               STORIES
             </span>
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            <h2 className="text-2xl md:text-4xl lg:text-6xl font-bold text-white mb-3 md:mb-6">
               Real <span className="text-primary-gold">Love Stories</span>
             </h2>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            <p className="text-white/50 text-sm md:text-lg max-w-2xl mx-auto px-2">
               {storiesCount} happy couples found their match through us
             </p>
           </motion.div>
@@ -1195,14 +1100,14 @@ const HomePage = () => {
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={successStories[currentStory]?.id || currentStory}
-                    initial={{ opacity: 0, x: 60, scale: 0.9, rotateY: 10 }}
-                    animate={{ opacity: 1, x: 0, scale: 1, rotateY: 0 }}
-                    exit={{ opacity: 0, x: -60, scale: 0.9, rotateY: -10 }}
-                    transition={{ duration: 0.7, ease: "easeInOut" }}
-                    className="relative bg-gradient-to-r from-primary-maroon/10 to-primary-gold/5 rounded-3xl overflow-hidden border border-white/5 shadow-2xl shadow-primary-maroon/5"
+                    initial={{ opacity: 0, x: 30, scale: 0.95 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: -30, scale: 0.95 }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    className="relative bg-gradient-to-r from-primary-maroon/10 to-primary-gold/5 rounded-2xl md:rounded-3xl overflow-hidden border border-white/5 shadow-2xl shadow-primary-maroon/5"
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-2">
-                      <div className="relative h-64 lg:h-auto overflow-hidden">
+                      <div className="relative h-48 md:h-64 lg:h-auto overflow-hidden">
                         <motion.img
                           src={
                             successStories[currentStory]?.image ||
@@ -1219,13 +1124,13 @@ const HomePage = () => {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent lg:hidden"></div>
                       </div>
-                      <div className="p-8 lg:p-12 flex flex-col justify-center">
+                      <div className="p-6 md:p-8 lg:p-12 flex flex-col justify-center">
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.2 }}
                         >
-                          <div className="flex items-center gap-2 mb-4">
+                          <div className="flex items-center gap-1 md:gap-2 mb-2 md:mb-4">
                             {[...Array(5)].map((_, i) => (
                               <motion.div
                                 key={i}
@@ -1233,19 +1138,19 @@ const HomePage = () => {
                                 animate={{ scale: 1 }}
                                 transition={{ delay: 0.3 + i * 0.1 }}
                               >
-                                <FaStar className="text-primary-gold" />
+                                <FaStar className="text-primary-gold text-xs md:text-base" />
                               </motion.div>
                             ))}
                           </div>
-                          <h3 className="text-3xl font-bold text-white mb-2">
+                          <h3 className="text-xl md:text-3xl font-bold text-white mb-1 md:mb-2">
                             {successStories[currentStory]?.couple ||
                               "Happy Couple"}
                           </h3>
-                          <p className="text-primary-gold text-sm mb-4">
+                          <p className="text-primary-gold text-xs md:text-sm mb-2 md:mb-4">
                             {successStories[currentStory]?.location || "India"}{" "}
                             • {successStories[currentStory]?.date || "Recently"}
                           </p>
-                          <p className="text-white/70 leading-relaxed mb-6">
+                          <p className="text-white/70 text-sm md:text-base leading-relaxed mb-4 md:mb-6">
                             "
                             {successStories[currentStory]?.story ||
                               "A beautiful love story found through Shubha Mangalam."}
@@ -1253,7 +1158,7 @@ const HomePage = () => {
                           </p>
                           <Link
                             to="/success-stories"
-                            className="text-primary-gold hover:text-amber-400 transition-colors flex items-center gap-2 group"
+                            className="text-primary-gold hover:text-amber-400 transition-colors flex items-center gap-2 group text-sm md:text-base"
                           >
                             Read Full Story
                             <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
@@ -1265,21 +1170,21 @@ const HomePage = () => {
                 </AnimatePresence>
 
                 {successStories.length > 1 && (
-                  <div className="flex justify-center gap-4 mt-8">
+                  <div className="flex justify-center gap-3 md:gap-4 mt-6 md:mt-8">
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={prevStory}
-                      className="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                      className="p-2 md:p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
                     >
-                      <FaChevronLeft className="text-white" />
+                      <FaChevronLeft className="text-white text-xs md:text-base" />
                     </motion.button>
-                    <div className="flex gap-2 items-center">
+                    <div className="flex gap-1 md:gap-2 items-center">
                       {successStories.map((_, index) => (
                         <button
                           key={index}
                           onClick={() => setCurrentStory(index)}
-                          className={`w-2 h-2 rounded-full transition-all ${currentStory === index ? "bg-gradient-to-r from-primary-gold to-amber-500 w-6" : "bg-white/20 hover:bg-white/40"}`}
+                          className={`w-2 h-2 rounded-full transition-all ${currentStory === index ? "bg-gradient-to-r from-primary-gold to-amber-500 w-4 md:w-6" : "bg-white/20 hover:bg-white/40"}`}
                         />
                       ))}
                     </div>
@@ -1287,15 +1192,15 @@ const HomePage = () => {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={nextStory}
-                      className="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                      className="p-2 md:p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
                     >
-                      <FaChevronRight className="text-white" />
+                      <FaChevronRight className="text-white text-xs md:text-base" />
                     </motion.button>
                   </div>
                 )}
               </>
             ) : (
-              <div className="text-center py-20 text-white/40">
+              <div className="text-center py-12 md:py-20 text-white/40">
                 <p>No success stories yet. Be the first!</p>
               </div>
             )}
@@ -1303,24 +1208,24 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ============ CINEMATIC TESTIMONIALS ============ */}
-      <section className="py-32 bg-gradient-to-b from-black via-[#0a0505] to-black relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-primary-maroon/5 via-transparent to-transparent"></div>
+      {/* ============ TESTIMONIALS - MOBILE FIXED ============ */}
+      <section className="py-16 md:py-32 bg-gradient-to-b from-black via-[#0a0505] to-black relative overflow-hidden w-full">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-primary-maroon/5 via-transparent to-transparent overflow-hidden pointer-events-none"></div>
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-20"
+            className="text-center mb-12 md:mb-20"
           >
-            <span className="inline-block text-primary-gold font-semibold tracking-wider text-sm mb-4">
+            <span className="inline-block text-primary-gold font-semibold tracking-wider text-xs md:text-sm mb-3 md:mb-4">
               TESTIMONIALS
             </span>
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            <h2 className="text-2xl md:text-4xl lg:text-6xl font-bold text-white mb-3 md:mb-6">
               What Our <span className="text-primary-gold">Members Say</span>
             </h2>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            <p className="text-white/50 text-sm md:text-lg max-w-2xl mx-auto px-2">
               Real stories from real couples who found love through us
             </p>
           </motion.div>
@@ -1333,18 +1238,18 @@ const HomePage = () => {
                     key={
                       testimonials[currentTestimonial]?.id || currentTestimonial
                     }
-                    initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -40, scale: 0.9 }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
-                    className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl"
+                    exit={{ opacity: 0, y: -30, scale: 0.95 }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl rounded-2xl md:rounded-3xl p-6 md:p-8 lg:p-12 border border-white/10 shadow-2xl"
                   >
                     <div className="flex flex-col items-center text-center">
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.2, type: "spring" }}
-                        className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary-gold/30 mb-6"
+                        className="w-14 h-14 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-primary-gold/30 mb-4 md:mb-6"
                       >
                         <img
                           src={
@@ -1365,31 +1270,31 @@ const HomePage = () => {
                         <motion.div
                           animate={{
                             scale: [1, 1.1, 1],
-                            rotate: [0, 5, 0, -5, 0],
+                            rotate: [0, 3, 0, -3, 0],
                           }}
                           transition={{ duration: 3, repeat: Infinity }}
                         >
-                          <FaQuoteRight className="text-primary-gold/30 text-4xl mb-4" />
+                          <FaQuoteRight className="text-primary-gold/30 text-3xl md:text-4xl mb-3 md:mb-4" />
                         </motion.div>
-                        <p className="text-xl md:text-2xl text-white/80 leading-relaxed mb-6">
+                        <p className="text-base md:text-xl lg:text-2xl text-white/80 leading-relaxed mb-4 md:mb-6 px-2">
                           "
                           {testimonials[currentTestimonial]?.story ||
                             "Shubha Mangalam helped us find our perfect match."}
                           "
                         </p>
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
                           {[...Array(5)].map((_, i) => (
                             <FaStar
                               key={i}
-                              className="text-primary-gold text-sm"
+                              className="text-primary-gold text-xs md:text-sm"
                             />
                           ))}
                         </div>
-                        <p className="text-white font-semibold">
+                        <p className="text-white font-semibold text-sm md:text-base">
                           {testimonials[currentTestimonial]?.name ||
                             "Happy Couple"}
                         </p>
-                        <p className="text-white/40 text-sm">
+                        <p className="text-white/40 text-xs md:text-sm">
                           {testimonials[currentTestimonial]?.location ||
                             "India"}
                         </p>
@@ -1400,21 +1305,21 @@ const HomePage = () => {
 
                 {testimonials.length > 1 && (
                   <>
-                    <div className="flex justify-center gap-4 mt-8">
+                    <div className="flex justify-center gap-3 md:gap-4 mt-6 md:mt-8">
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={prevTestimonial}
-                        className="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                        className="p-2 md:p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
                       >
-                        <FaChevronLeft className="text-white" />
+                        <FaChevronLeft className="text-white text-xs md:text-base" />
                       </motion.button>
-                      <div className="flex gap-2 items-center">
+                      <div className="flex gap-1 md:gap-2 items-center">
                         {testimonials.map((_, index) => (
                           <button
                             key={index}
                             onClick={() => setCurrentTestimonial(index)}
-                            className={`w-2 h-2 rounded-full transition-all ${currentTestimonial === index ? "bg-gradient-to-r from-primary-gold to-amber-500 w-6" : "bg-white/20 hover:bg-white/40"}`}
+                            className={`w-2 h-2 rounded-full transition-all ${currentTestimonial === index ? "bg-gradient-to-r from-primary-gold to-amber-500 w-4 md:w-6" : "bg-white/20 hover:bg-white/40"}`}
                           />
                         ))}
                       </div>
@@ -1422,16 +1327,16 @@ const HomePage = () => {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={nextTestimonial}
-                        className="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                        className="p-2 md:p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
                       >
-                        <FaChevronRight className="text-white" />
+                        <FaChevronRight className="text-white text-xs md:text-base" />
                       </motion.button>
                     </div>
 
-                    <div className="flex justify-center mt-4">
+                    <div className="flex justify-center mt-3 md:mt-4">
                       <button
                         onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-                        className="text-white/40 hover:text-white/60 transition-colors text-sm flex items-center gap-2"
+                        className="text-white/40 hover:text-white/60 transition-colors text-xs md:text-sm flex items-center gap-2"
                       >
                         {isAutoPlaying ? <FaPause /> : <FaPlay />}
                         <span>
@@ -1443,7 +1348,7 @@ const HomePage = () => {
                 )}
               </>
             ) : (
-              <div className="text-center py-20 text-white/40">
+              <div className="text-center py-12 md:py-20 text-white/40">
                 <p>No testimonials yet.</p>
               </div>
             )}
@@ -1451,25 +1356,10 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ============ CINEMATIC CTA SECTION ============ */}
-      <section className="py-32 bg-gradient-to-b from-black via-[#0a0505] to-black relative overflow-hidden">
-        <div className="absolute inset-0">
+      {/* ============ CTA SECTION - MOBILE FIXED ============ */}
+      <section className="py-16 md:py-32 bg-gradient-to-b from-black via-[#0a0505] to-black relative overflow-hidden w-full">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary-maroon/10 via-transparent to-transparent"></div>
-          <motion.div
-            animate={{ x: ["-100%", "100%"] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-transparent via-primary-gold/5 to-transparent skew-x-12"
-          />
-          <motion.div
-            animate={{ x: ["100%", "-100%"] }}
-            transition={{
-              duration: 12,
-              repeat: Infinity,
-              ease: "linear",
-              delay: 3,
-            }}
-            className="absolute bottom-0 right-0 w-1/3 h-full bg-gradient-to-l from-transparent via-primary-gold/5 to-transparent skew-x-12"
-          />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
@@ -1485,31 +1375,31 @@ const HomePage = () => {
               whileInView={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary-gold/20 bg-primary-gold/10 backdrop-blur-sm mb-6"
+              className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-primary-gold/20 bg-primary-gold/10 backdrop-blur-sm mb-4 md:mb-6"
             >
-              <HiOutlineSparkles className="text-primary-gold text-sm animate-pulse" />
-              <span className="text-sm font-medium text-primary-gold">
+              <HiOutlineSparkles className="text-primary-gold text-xs md:text-sm animate-pulse" />
+              <span className="text-xs md:text-sm font-medium text-primary-gold">
                 Start Your Journey Today
               </span>
             </motion.div>
 
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            <h2 className="text-2xl md:text-4xl lg:text-6xl font-bold text-white mb-3 md:mb-6">
               Ready to Find{" "}
               <span className="text-primary-gold">Your Perfect Match</span>?
             </h2>
-            <p className="text-xl text-white/60 mb-12 max-w-2xl mx-auto">
+            <p className="text-base md:text-xl text-white/60 mb-8 md:mb-12 max-w-2xl mx-auto px-2">
               Join {membersCount.toLocaleString()} members and find your
               soulmate through Shubha Mangalam
             </p>
 
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Link
                   to={isAuthenticated ? "/search" : "/register"}
-                  className="group px-10 py-4 bg-gradient-to-r from-primary-gold via-amber-500 to-primary-gold text-white rounded-2xl font-semibold text-lg overflow-hidden transition-all duration-300 shadow-2xl shadow-primary-gold/30 flex items-center gap-2"
+                  className="group px-6 md:px-10 py-3 md:py-4 bg-gradient-to-r from-primary-gold via-amber-500 to-primary-gold text-white rounded-2xl font-semibold text-sm md:text-lg overflow-hidden transition-all duration-300 shadow-2xl shadow-primary-gold/30 flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-primary-gold via-yellow-400 to-primary-gold opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
                   <span className="relative z-10 flex items-center gap-2">
@@ -1536,7 +1426,7 @@ const HomePage = () => {
               >
                 <a
                   href="tel:+919110480411"
-                  className="px-10 py-4 bg-white/5 backdrop-blur-sm text-white rounded-2xl border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                  className="px-6 md:px-10 py-3 md:py-4 bg-white/5 backdrop-blur-sm text-white rounded-2xl border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-sm md:text-base w-full sm:w-auto"
                 >
                   <FaPhone />
                   <span>Call Broker</span>
@@ -1551,7 +1441,7 @@ const HomePage = () => {
                   href="https://wa.me/918123427060"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-10 py-4 bg-green-500/10 backdrop-blur-sm text-white rounded-2xl border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center justify-center gap-2"
+                  className="px-6 md:px-10 py-3 md:py-4 bg-green-500/10 backdrop-blur-sm text-white rounded-2xl border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center justify-center gap-2 text-sm md:text-base w-full sm:w-auto"
                 >
                   <FaWhatsapp />
                   <span>WhatsApp</span>
@@ -1582,12 +1472,20 @@ const HomePage = () => {
         .perspective-1200 {
           perspective: 1200px;
         }
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-30px) rotate(2deg); }
+        
+        /* Hide scroll indicator on very small screens */
+        @media (max-width: 480px) {
+          .perspective-1200 {
+            perspective: 800px;
+          }
         }
-        .animate-float-slow {
-          animation: float-slow 8s ease-in-out infinite;
+        
+        /* Extra small screen fixes */
+        @media (max-width: 400px) {
+          .container {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+          }
         }
       `}</style>
     </Layout>
