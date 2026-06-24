@@ -10,7 +10,8 @@ import {
 import Layout from "../../components/common/Layout";
 
 const BrokerOfficePage = () => {
-  const officeAddress = "KEB Rd, Nandi Colony, Bidar, Karnataka 585401, India";
+  const officeAddress =
+    "Near Gudge Hospital, KEB road Nandi colony , Bidar 585401, India";
   const embedMapUrl =
     "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3796.3697542277177!2d77.5128!3d17.9149!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcec6d0ab3faa71%3A0xe68121ab6aa16654!2sKEB%20Rd%2C%20Bidar%2C%20Karnataka%20585401!5e0!3m2!1sen!2sin!4v1781987322573!5m2!1sen!2sin";
 

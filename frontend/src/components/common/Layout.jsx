@@ -571,7 +571,7 @@ const Layout = ({ children }) => {
                       Office
                     </p>
                     <p className="text-gray-300 text-sm">
-                      KEB Rd, Nandi Colony, Bidar, Karnataka 585401
+                      Near Gudge Hospital, KEB road Nandi colony , Bidar 585401
                     </p>
                   </div>
                 </li>
